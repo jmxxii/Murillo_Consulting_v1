@@ -21,19 +21,28 @@ const ScheduleSection = () => {
           <div className="bg-primary-foreground/10 border border-primary-foreground/20 rounded-lg p-12 mb-8">
             <Calendar className="w-12 h-12 text-primary-foreground/50 mx-auto mb-4" />
             <p className="text-primary-foreground/60 text-sm font-medium mb-2">
-              Microsoft Teams Scheduling Widget
+              Book Your Energy Strategy Consultation
             </p>
-            <p className="text-primary-foreground/40 text-xs max-w-md mx-auto">
-              Embed your Microsoft Teams booking page here. Replace this
-              placeholder with your scheduling script or iframe embed code.
+            <p className="text-primary-foreground/40 text-xs max-w-md mx-auto mb-6">
+              Use our scheduling tool to find a time that works best for you.
             </p>
+            <Button variant="hero" size="lg" className="text-base px-8 py-6" asChild>
+              <a href="https://outlook.office.com/book/EnergyStrategy@murilloconsulting.co/?ismsaljsauthenabled=true">
+                Schedule Now
+              </a>
+            </Button>
           </div>
 
-          <Button variant="hero" size="lg" className="text-base px-8 py-6" asChild>
-            <a href="mailto:contact@murilloconsulting.com">
-              Or Contact Us Directly
-            </a>
-          </Button>
+          <div className="mt-8">
+            <p className="text-primary-foreground/60 text-sm mb-4">
+              Prefer to contact us directly?
+            </p>
+            <Button variant="outline" size="lg" className="text-base px-8 py-6" asChild>
+              <a href="mailto:contact@murilloconsulting.com">
+                Send Us an Email
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
     </section>
