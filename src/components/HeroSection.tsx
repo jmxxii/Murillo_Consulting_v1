@@ -3,7 +3,7 @@ import heroImage from "@/assets/hero-energy.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center">
+    <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center">
       {/* Background image with overlay */}
       <div className="absolute inset-0">
         <img
@@ -14,27 +14,36 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-primary/85" />
       </div>
 
-      <div className="container relative z-10 py-24">
+      <div className="container relative z-10 py-28 md:py-24 lg:py-32">
         <div className="max-w-3xl">
-          <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-6">
-            Energy &amp; Sustainability Consulting
+          <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-5 md:mb-6">
+            Murillo Consulting, LLC
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary-foreground leading-tight mb-6">
-            Powering the Future of
-            <br />
-            Sustainable Energy
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary-foreground leading-tight mb-5 md:mb-6">
+            Energy &amp; Sustainability
+            <span className="block">Consulting That Scales</span>
           </h1>
-          <p className="text-lg md:text-xl text-primary-foreground/75 leading-relaxed mb-10 max-w-2xl">
-            Strategic advisory and implementation support for government agencies,
-            utilities, and large-scale energy organizations driving the transition
-            to a cleaner, more resilient energy future.
+          <p className="text-base md:text-lg lg:text-xl text-primary-foreground/75 leading-relaxed mb-8 md:mb-10 max-w-2xl">
+            From enterprise energy strategy to community-level implementation —
+            Murillo Consulting serves government agencies, utilities, municipalities,
+            hotels, and multifamily properties with practical, results-driven consulting.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="hero" size="lg" className="text-base px-8 py-6" asChild>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <Button
+              variant="hero"
+              size="lg"
+              className="text-base px-8 py-6 w-full sm:w-auto"
+              asChild
+            >
               <a href="#schedule">Schedule a Consultation</a>
             </Button>
-            <Button variant="heroOutline" size="lg" className="text-base px-8 py-6" asChild>
-              <a href="#services">Our Services</a>
+            <Button
+              variant="heroOutline"
+              size="lg"
+              className="text-base px-8 py-6 w-full sm:w-auto"
+              asChild
+            >
+              <a href="#divisions">Our Divisions</a>
             </Button>
           </div>
         </div>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 36" fill="none">
+  <!--
+    Murillo Consulting, LLC — Symbol Mark
+    Concept: Geometric M letterform. Two ascending peaks suggest upward momentum,
+    infrastructure, and energy. The baseline grounds the form. The accent node
+    at the valley references an energy connection point.
+    Use on dark backgrounds (white variant) or light backgrounds (navy variant).
+  -->
+
+  <!-- M letterform — two angular peaks -->
+  <path
+    d="M3 32 L13 7 L20 20 L27 7 L37 32"
+    stroke="hsl(215, 60%, 18%)"
+    stroke-width="3.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Baseline — stability / infrastructure -->
+  <line
+    x1="3" y1="32" x2="37" y2="32"
+    stroke="hsl(215, 60%, 18%)"
+    stroke-width="3.5"
+    stroke-linecap="round"
+  />
+  <!-- Accent node at M valley — energy connection point -->
+  <circle cx="20" cy="20" r="2.8" fill="hsl(200, 70%, 45%)"/>
+</svg>

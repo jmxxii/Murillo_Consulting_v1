@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 40" fill="none">
+  <!--
+    Murillo Consulting, LLC — Horizontal Lockup (Dark / Primary)
+    Symbol mark on left, wordmark on right.
+    Font: Assumes Inter/system sans-serif for text. Embed or substitute as needed.
+  -->
+
+  <!-- Symbol mark (scaled to 36px height within 40px viewBox) -->
+  <g transform="translate(2, 2)">
+    <path
+      d="M3 32 L13 7 L20 20 L27 7 L37 32"
+      stroke="hsl(215, 60%, 18%)"
+      stroke-width="3.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <line
+      x1="3" y1="32" x2="37" y2="32"
+      stroke="hsl(215, 60%, 18%)"
+      stroke-width="3.5"
+      stroke-linecap="round"
+    />
+    <circle cx="20" cy="20" r="2.8" fill="hsl(200, 70%, 45%)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text
+    x="52"
+    y="24"
+    font-family="'Plus Jakarta Sans', Inter, system-ui, -apple-system, sans-serif"
+    font-weight="700"
+    font-size="18"
+    fill="hsl(215, 60%, 18%)"
+    letter-spacing="-0.3"
+  >Murillo Consulting</text>
+  <text
+    x="52"
+    y="36"
+    font-family="'Plus Jakarta Sans', Inter, system-ui, -apple-system, sans-serif"
+    font-weight="600"
+    font-size="9"
+    fill="hsl(215, 60%, 18%)"
+    opacity="0.45"
+    letter-spacing="2"
+  >LLC</text>
+</svg>
