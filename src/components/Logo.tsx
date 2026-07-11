@@ -5,10 +5,11 @@
  * variant is chosen per background, so the artwork is never recolored, stretched,
  * or distorted (only scaled by height, width auto).
  *
- * Drop the official transparent files at these paths (see public/assets/logo/):
- *   mc-logo-horizontal.svg           — color wordmark, for light backgrounds
- *   mc-logo-horizontal-reversed.svg  — white wordmark, for navy backgrounds (nav/footer)
- *   mc-symbol.svg / mc-symbol-reversed.svg — icon-only marks (compact / favicon)
+ * Drop the official transparent PNGs at these paths (see public/assets/logo/).
+ * Export at ~3x display size for retina crispness (horizontal ≈ 720×160+):
+ *   mc-logo-horizontal.png           — color wordmark, for light backgrounds
+ *   mc-logo-horizontal-reversed.png  — white wordmark, for navy backgrounds (nav/footer)
+ *   mc-symbol.png / mc-symbol-reversed.png — icon-only marks (compact use)
  *
  * variant="nav"     — reversed (white) lockup for dark/navy surfaces
  * variant="default" — color lockup for light surfaces
@@ -25,7 +26,7 @@ interface LogoProps {
 const Logo = ({ variant = "nav", symbol = false, className = "" }: LogoProps) => {
   const reversed = variant === "nav";
   const base = symbol ? "mc-symbol" : "mc-logo-horizontal";
-  const src = `/assets/logo/${base}${reversed ? "-reversed" : ""}.svg`;
+  const src = `/assets/logo/${base}${reversed ? "-reversed" : ""}.png`;
 
   return (
     <a
