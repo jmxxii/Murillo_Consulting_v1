@@ -30,7 +30,7 @@ const Navbar = () => {
             <a
               key={item.label}
               href={`#${item.anchor}`}
-              className="text-primary-foreground/70 hover:text-primary-foreground text-sm font-medium transition-colors"
+              className="text-primary-foreground/70 hover:text-accent text-sm font-medium transition-colors"
             >
               {item.label}
             </a>
@@ -67,7 +67,7 @@ const Navbar = () => {
                   key={item.label}
                   href={`#${item.anchor}`}
                   onClick={() => setOpen(false)}
-                  className="text-nav-foreground/70 hover:text-nav-foreground hover:bg-white/5 px-4 py-3.5 rounded-md text-[15px] font-medium transition-colors"
+                  className="text-nav-foreground/70 hover:text-accent hover:bg-white/5 px-4 py-3.5 rounded-md text-[15px] font-medium transition-colors"
                 >
                   {item.label}
                 </a>
@@ -79,7 +79,7 @@ const Navbar = () => {
               <a
                 href="#schedule"
                 onClick={() => setOpen(false)}
-                className="block w-full text-center bg-accent hover:bg-accent/90 text-white py-3.5 rounded-md text-sm font-semibold transition-colors"
+                className="block w-full text-center bg-background text-primary hover:bg-surface py-3.5 rounded-md text-sm font-semibold transition-colors"
               >
                 Schedule a Consultation
               </a>

@@ -45,7 +45,7 @@ const ScheduleSection = () => {
               Prefer to reach us directly?
             </p>
             <Button
-              variant="outline"
+              variant="heroOutline"
               size="lg"
               className="text-base px-8 py-6 w-full sm:w-auto"
               asChild

@@ -15,7 +15,7 @@ const ApproachSection = () => {
       <div className="container">
         <div className="grid lg:grid-cols-2 gap-10 md:gap-12 lg:gap-16 items-start lg:items-center max-w-6xl mx-auto">
           <div>
-            <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-4">
+            <p className="text-secondary font-semibold tracking-widest uppercase text-sm mb-4">
               Our Approach
             </p>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mb-5 md:mb-6">
@@ -37,7 +37,7 @@ const ApproachSection = () => {
             <ul className="space-y-3 md:space-y-4">
               {values.map((value) => (
                 <li key={value} className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-secondary shrink-0 mt-0.5" />
                   <span className="text-sm md:text-base text-surface-foreground leading-snug">
                     {value}
                   </span>

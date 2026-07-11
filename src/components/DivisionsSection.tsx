@@ -32,8 +32,8 @@ const divisions = [
       "Community energy & sustainability planning",
     ],
     anchor: "#services-community",
-    accentClass: "bg-accent/10 text-accent border-accent/20",
-    badgeClass: "bg-accent/10 text-accent",
+    accentClass: "bg-secondary/10 text-secondary border-secondary/20",
+    badgeClass: "bg-secondary/10 text-secondary",
   },
 ];
 
@@ -42,7 +42,7 @@ const DivisionsSection = () => {
     <section id="divisions" className="py-16 md:py-24 bg-surface">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-10 md:mb-16">
-          <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-4">
+          <p className="text-secondary font-semibold tracking-widest uppercase text-sm mb-4">
             Our Divisions
           </p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mb-5 md:mb-6">
@@ -85,7 +85,7 @@ const DivisionsSection = () => {
               <ul className="space-y-2 mb-6 md:mb-8">
                 {division.highlights.map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-foreground">
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -94,7 +94,7 @@ const DivisionsSection = () => {
               <div className="mt-auto">
                 <a
                   href={division.anchor}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:text-accent/80 transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:text-accent transition-colors"
                 >
                   View Services
                   <ArrowRight className="w-4 h-4" />

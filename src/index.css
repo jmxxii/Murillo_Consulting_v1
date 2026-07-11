@@ -6,40 +6,49 @@
 
 @layer base {
   :root {
+    /* ── Murillo Consulting brand palette (source of truth) ──
+       Navy   #1B3A66  hsl(216 58% 25%)  — primary / foundation
+       Green  #2F7D37  hsl(126 45% 33%)  — secondary / sustainability
+       Orange #ED8220  hsl(30 86% 53%)   — accent (sparing: hover, focus, active) */
+
     --background: 0 0% 100%;
-    --foreground: 215 25% 15%;
+    --foreground: 216 33% 15%;        /* navy-ink — text primary */
 
     --card: 210 20% 98%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 216 33% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 216 33% 15%;
 
-    --primary: 215 60% 18%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 216 58% 25%;           /* navy */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 15% 93%;
-    --secondary-foreground: 215 25% 15%;
+    --secondary: 126 45% 33%;         /* forest green */
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 210 15% 96%;
-    --muted-foreground: 215 12% 50%;
+    --muted-foreground: 216 12% 42%;  /* text secondary */
 
-    --accent: 200 70% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 30 86% 53%;             /* orange — accent only */
+    --accent-foreground: 216 40% 14%; /* navy text for the rare orange fill */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --success: 126 45% 33%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 48%;
+    --warning-foreground: 216 40% 14%;
+    --destructive: 0 72% 48%;         /* error */
+    --destructive-foreground: 0 0% 100%;
 
     --border: 214 20% 90%;
-    --input: 214 20% 90%;
-    --ring: 215 60% 18%;
+    --input: 214 20% 88%;
+    --ring: 30 86% 53%;               /* orange focus ring */
 
     --radius: 0.375rem;
 
-    --nav: 215 60% 12%;
-    --nav-foreground: 210 20% 90%;
+    --nav: 216 52% 14%;               /* deep navy nav/footer */
+    --nav-foreground: 210 20% 92%;
     --surface: 210 20% 97%;
-    --surface-foreground: 215 25% 25%;
+    --surface-foreground: 216 25% 24%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -52,29 +61,33 @@
   }
 
   .dark {
-    --background: 215 25% 8%;
-    --foreground: 210 20% 90%;
-    --card: 215 25% 12%;
-    --card-foreground: 210 20% 90%;
-    --popover: 215 25% 12%;
-    --popover-foreground: 210 20% 90%;
-    --primary: 200 70% 50%;
-    --primary-foreground: 215 60% 10%;
-    --secondary: 215 20% 18%;
-    --secondary-foreground: 210 20% 90%;
-    --muted: 215 20% 18%;
-    --muted-foreground: 215 12% 60%;
-    --accent: 200 70% 45%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215 20% 20%;
-    --input: 215 20% 20%;
-    --ring: 200 70% 50%;
-    --nav: 215 60% 6%;
-    --nav-foreground: 210 20% 85%;
-    --surface: 215 25% 12%;
-    --surface-foreground: 210 20% 80%;
+    --background: 216 30% 9%;
+    --foreground: 210 20% 92%;
+    --card: 216 28% 13%;
+    --card-foreground: 210 20% 92%;
+    --popover: 216 28% 13%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 216 55% 55%;           /* lifted navy for dark surfaces */
+    --primary-foreground: 216 40% 10%;
+    --secondary: 126 40% 44%;         /* lifted green */
+    --secondary-foreground: 216 40% 10%;
+    --muted: 216 22% 18%;
+    --muted-foreground: 216 12% 62%;
+    --accent: 30 86% 55%;             /* orange */
+    --accent-foreground: 216 40% 12%;
+    --success: 126 40% 44%;
+    --success-foreground: 216 40% 10%;
+    --warning: 38 90% 52%;
+    --warning-foreground: 216 40% 12%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 216 22% 22%;
+    --input: 216 22% 22%;
+    --ring: 30 86% 55%;
+    --nav: 216 40% 7%;
+    --nav-foreground: 210 20% 88%;
+    --surface: 216 28% 13%;
+    --surface-foreground: 210 20% 82%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

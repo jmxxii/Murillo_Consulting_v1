@@ -5,7 +5,7 @@ const AboutSection = () => {
     <section id="about" className="py-16 md:py-24 bg-background">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-10 md:mb-16">
-          <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-4">
+          <p className="text-secondary font-semibold tracking-widest uppercase text-sm mb-4">
             Who We Are
           </p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mb-5 md:mb-6">
@@ -46,8 +46,8 @@ const AboutSection = () => {
               key={item.title}
               className="bg-surface p-6 md:p-8 rounded-lg border border-border"
             >
-              <div className="w-11 h-11 md:w-12 md:h-12 rounded-md bg-primary/10 flex items-center justify-center mb-4 md:mb-5">
-                <item.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+              <div className="w-11 h-11 md:w-12 md:h-12 rounded-md bg-secondary/10 flex items-center justify-center mb-4 md:mb-5">
+                <item.icon className="w-5 h-5 md:w-6 md:h-6 text-secondary" />
               </div>
               <h3 className="text-base md:text-lg font-display font-semibold text-foreground mb-2 md:mb-3">
                 {item.title}

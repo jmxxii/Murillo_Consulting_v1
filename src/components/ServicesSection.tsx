@@ -62,8 +62,8 @@ interface ServiceCardProps {
 
 const ServiceCard = ({ icon: Icon, title, description }: ServiceCardProps) => (
   <div className="bg-background p-5 sm:p-6 md:p-8 rounded-lg border border-border flex gap-4 md:gap-5">
-    <div className="w-10 h-10 md:w-11 md:h-11 rounded-md bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
-      <Icon className="w-4 h-4 md:w-5 md:h-5 text-accent" />
+    <div className="w-10 h-10 md:w-11 md:h-11 rounded-md bg-secondary/10 flex items-center justify-center shrink-0 mt-0.5">
+      <Icon className="w-4 h-4 md:w-5 md:h-5 text-secondary" />
     </div>
     <div>
       <h3 className="text-base md:text-lg font-display font-semibold text-foreground mb-1.5 md:mb-2">
@@ -97,7 +97,7 @@ const ServicesSection = () => {
     <section id="services" className="py-16 md:py-24 bg-surface">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-10 md:mb-16">
-          <p className="text-accent font-semibold tracking-widest uppercase text-sm mb-4">
+          <p className="text-secondary font-semibold tracking-widest uppercase text-sm mb-4">
             What We Do
           </p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-foreground mb-5 md:mb-6">
@@ -126,7 +126,7 @@ const ServicesSection = () => {
         <div id="services-community" className="max-w-5xl mx-auto">
           <DivisionDivider
             label="Division II — Community & Property Energy Consulting"
-            colorClass="text-accent bg-accent/10"
+            colorClass="text-secondary bg-secondary/10"
           />
           <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
             {communityServices.map((service) => (
