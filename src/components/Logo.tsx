@@ -1,75 +1,44 @@
 /**
- * Murillo Consulting — Logo Component
+ * Murillo Consulting — Logo
  *
- * Mark concept: Geometric M letterform with two ascending peaks (upward momentum /
- * energy sector), a grounding baseline (stability / infrastructure), and a small
- * accent node at the M valley (energy connection point). Clean, minimal, consulting-grade.
+ * Renders the official brand lockup from a pre-colored SVG asset — the correct
+ * variant is chosen per background, so the artwork is never recolored, stretched,
+ * or distorted (only scaled by height, width auto).
  *
- * variant="nav"     — white strokes for use on dark/primary nav backgrounds
- * variant="default" — navy strokes for use on light backgrounds
+ * Drop the official transparent files at these paths (see public/assets/logo/):
+ *   mc-logo-horizontal.svg           — color wordmark, for light backgrounds
+ *   mc-logo-horizontal-reversed.svg  — white wordmark, for navy backgrounds (nav/footer)
+ *   mc-symbol.svg / mc-symbol-reversed.svg — icon-only marks (compact / favicon)
+ *
+ * variant="nav"     — reversed (white) lockup for dark/navy surfaces
+ * variant="default" — color lockup for light surfaces
  */
 
 interface LogoProps {
-  /** "nav" renders white for dark nav backgrounds; "default" renders navy for light backgrounds */
+  /** "nav" = reversed lockup for navy backgrounds; "default" = color lockup for light backgrounds */
   variant?: "nav" | "default";
+  /** render the icon-only symbol instead of the full horizontal lockup */
+  symbol?: boolean;
   className?: string;
 }
 
-const Logo = ({ variant = "nav", className = "" }: LogoProps) => {
-  const onDark = variant === "nav";
-
-  const stroke = onDark ? "#ffffff" : "hsl(215, 60%, 18%)";
-  const accentFill = onDark ? "rgba(255,255,255,0.50)" : "hsl(200, 70%, 45%)";
-  const nameColor = onDark ? "text-primary-foreground" : "text-foreground";
-  const llcColor = onDark ? "text-primary-foreground/45" : "text-muted-foreground";
+const Logo = ({ variant = "nav", symbol = false, className = "" }: LogoProps) => {
+  const reversed = variant === "nav";
+  const base = symbol ? "mc-symbol" : "mc-logo-horizontal";
+  const src = `/assets/logo/${base}${reversed ? "-reversed" : ""}.svg`;
 
   return (
     <a
       href="#"
-      className={`flex items-center gap-3 group ${className}`}
+      className={`inline-flex items-center shrink-0 ${className}`}
       aria-label="Murillo Consulting — Home"
     >
-      {/* ── Symbol mark ── */}
-      <svg
-        viewBox="0 0 40 36"
-        height="34"
-        width="38"
-        fill="none"
-        aria-hidden="true"
-        className="shrink-0"
-      >
-        {/* M letterform — two angular ascending peaks */}
-        <path
-          d="M3 32 L13 7 L20 20 L27 7 L37 32"
-          stroke={stroke}
-          strokeWidth="3.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* Baseline — grounds the mark, references infrastructure */}
-        <line
-          x1="3" y1="32" x2="37" y2="32"
-          stroke={stroke}
-          strokeWidth="3.5"
-          strokeLinecap="round"
-        />
-        {/* Accent node at the M valley — energy connection point */}
-        <circle cx="20" cy="20" r="2.8" fill={accentFill} />
-      </svg>
-
-      {/* ── Wordmark ── */}
-      <div className="leading-none select-none">
-        <span
-          className={`font-display font-bold text-[17px] tracking-tight block ${nameColor}`}
-        >
-          Murillo Consulting
-        </span>
-        <span
-          className={`font-sans text-[9.5px] font-semibold tracking-[0.18em] uppercase block mt-[3px] ${llcColor}`}
-        >
-          LLC
-        </span>
-      </div>
+      <img
+        src={src}
+        alt="Murillo Consulting"
+        className={`w-auto select-none ${symbol ? "h-9" : "h-8 sm:h-9 md:h-10"}`}
+        draggable={false}
+      />
     </a>
   );
 };
