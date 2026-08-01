@@ -1,21 +1,31 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
 
+/**
+ * Every color below maps to a CSS custom property declared in src/index.css.
+ * Add new brand colors there first — never hardcode a hex value in a component.
+ */
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1.25rem",
+        sm: "1.5rem",
+        lg: "2rem",
+      },
       screens: {
-        "2xl": "1400px",
+        "2xl": "1320px",
       },
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        display: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -26,46 +36,65 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+          active: "hsl(var(--primary-active))",
+          subtle: "hsl(var(--primary-subtle))",
+          "subtle-foreground": "hsl(var(--primary-subtle-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+          hover: "hsl(var(--secondary-hover))",
+          active: "hsl(var(--secondary-active))",
+          subtle: "hsl(var(--secondary-subtle))",
+          "subtle-foreground": "hsl(var(--secondary-subtle-foreground))",
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+          strong: "hsl(var(--accent-strong))",
+          "strong-foreground": "hsl(var(--accent-strong-foreground))",
+          "strong-hover": "hsl(var(--accent-strong-hover))",
+          "strong-active": "hsl(var(--accent-strong-active))",
+          subtle: "hsl(var(--accent-subtle))",
+          "subtle-foreground": "hsl(var(--accent-subtle-foreground))",
         },
-        success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))",
+        nav: {
+          DEFAULT: "hsl(var(--nav))",
+          foreground: "hsl(var(--nav-foreground))",
+          "muted-foreground": "hsl(var(--nav-muted-foreground))",
+          border: "hsl(var(--nav-border))",
         },
-        warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))",
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          foreground: "hsl(var(--surface-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+          subtle: "hsl(var(--success-subtle))",
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+          subtle: "hsl(var(--warning-subtle))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+          subtle: "hsl(var(--destructive-subtle))",
         },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        nav: {
-          DEFAULT: "hsl(var(--nav))",
-          foreground: "hsl(var(--nav-foreground))",
-        },
-        surface: {
-          DEFAULT: "hsl(var(--surface))",
-          foreground: "hsl(var(--surface-foreground))",
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -83,6 +112,11 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        card: "0 1px 2px 0 hsl(var(--primary) / 0.04), 0 4px 16px -4px hsl(var(--primary) / 0.08)",
+        "card-hover": "0 2px 4px 0 hsl(var(--primary) / 0.06), 0 12px 28px -6px hsl(var(--primary) / 0.14)",
+        header: "0 1px 3px 0 hsl(var(--primary) / 0.10)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -99,5 +133,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate, typography],
 } satisfies Config;

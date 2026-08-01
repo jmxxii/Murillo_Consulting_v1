@@ -3,15 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Murillo Consulting, LLC | Energy &amp; Sustainability Consulting</title>
-    <meta name="description" content="Murillo Consulting, LLC provides expert energy and sustainability consulting across two divisions: enterprise-level advisory for agencies and utilities, and community-focused energy solutions for municipalities, hotels, and multifamily properties." />
-    <meta name="author" content="Murillo Consulting, LLC" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
 
-    <meta property="og:title" content="Murillo Consulting, LLC | Energy &amp; Sustainability Consulting" />
-    <meta property="og:description" content="Strategic energy and sustainability advisory for enterprises and communities. Two divisions, one trusted firm." />
+    <!--
+      These tags are the fallback for crawlers that do not execute JavaScript.
+      Per-route titles, descriptions, canonicals, hreflang and Open Graph tags
+      are written at runtime by src/hooks/useDocumentMeta.ts. English is the
+      default language, so the static copy here is English.
+    -->
+    <title>Murillo Consulting, LLC | Better Energy Rates for Your Business</title>
+    <meta
+      name="description"
+      content="Murillo Consulting helps small and midsize businesses compare electricity and natural gas options, identify potential savings, and make informed decisions with personalized guidance in English and Spanish."
+    />
+    <meta name="author" content="Murillo Consulting, LLC" />
+    <!-- Matches the header bar, which is white so the full-colour logo reads. -->
+    <meta name="theme-color" content="#FFFFFF" />
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/assets/logo/mc-symbol.png" />
+    <link rel="canonical" href="https://murilloconsulting.com/" />
+    <link rel="alternate" hreflang="en" href="https://murilloconsulting.com/" />
+    <link rel="alternate" hreflang="es" href="https://murilloconsulting.com/es" />
+    <link rel="alternate" hreflang="x-default" href="https://murilloconsulting.com/" />
+
+    <!--
+      Fonts were previously pulled in with an @import inside index.css, which
+      made them a render-blocking request discovered only after the CSS
+      parsed. Preconnecting and linking here lets the browser start the fetch
+      immediately, and `display=swap` keeps text visible while they load.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    />
+
+    <meta property="og:title" content="Murillo Consulting, LLC | Better Energy Rates for Your Business" />
+    <meta
+      property="og:description"
+      content="Compare electricity and natural gas options, identify potential savings, and get personalized guidance in English and Spanish."
+    />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://murilloconsulting.com/" />
+    <meta property="og:site_name" content="Murillo Consulting, LLC" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="es_US" />
+    <meta property="og:image" content="https://murilloconsulting.com/assets/logo/mc-logo-horizontal.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@MurilloConsult" />

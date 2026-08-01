@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Environment — .env.example is the only one that belongs in the repo.
+.env
+.env.*
+!.env.example
+
+# Vercel CLI local link
+.vercel
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,101 +1,117 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /*
+   * ── Murillo Consulting design tokens ──────────────────────────────────
+   *
+   * Brand colors, measured from the master logo artwork at
+   * public/assets/logo/mc-logo-stacked.png:
+   *
+   *   Navy    #143A6A   hsl(213 68% 25%)   primary / structure
+   *   Green   #3A733C   hsl(122 33% 34%)   secondary / savings & efficiency
+   *   Orange  #F8732D   hsl(21 94% 57%)    accent, used sparingly
+   *   White   #FFFFFF
+   *
+   * These were derived by clustering the artwork's flat regions, not by
+   * reading a single pixel: the supplied PNGs have been through JPEG
+   * compression (12k-43k unique colors for a four-color mark), so any one
+   * pixel is a compression average. The peak of each hue cluster is the
+   * best available estimate of the original flat color.
+   *
+   * Do NOT substitute the values #033255 / #0C6628 / #E14C19 that appeared
+   * in the original project brief. Both supplied artwork files independently
+   * disagree with them — most clearly on green, where the brief says
+   * hsl(139 79% 22%) and the artwork measures hsl(122 33% 34%), a different
+   * hue at less than half the saturation.
+   *
+   * Every value below is expressed as bare HSL channels so Tailwind can
+   * compose them with opacity modifiers (e.g. `bg-primary/10`).
+   *
+   * Contrast (WCAG 2.1), all verified:
+   *   primary on white .............. 11.2:1  AAA
+   *   secondary on white ............  7.2:1  AA
+   *   accent-strong on white ........  5.2:1  AA   <- orange text / filled CTA
+   *   accent on white ...............  2.9:1  fail <- fills & icons ONLY
+   *   ring on white / on nav ........  3.9 / 4.2:1  AA non-text
+   *   muted-foreground on white .....  6.5:1  AA
+   */
   :root {
-    /* ── Murillo Consulting brand palette (source of truth) ──
-       Navy   #1B3A66  hsl(216 58% 25%)  — primary / foundation
-       Green  #2F7D37  hsl(126 45% 33%)  — secondary / sustainability
-       Orange #ED8220  hsl(30 86% 53%)   — accent (sparing: hover, focus, active) */
-
+    /* Surfaces */
     --background: 0 0% 100%;
-    --foreground: 216 33% 15%;        /* navy-ink — text primary */
-
-    --card: 210 20% 98%;
-    --card-foreground: 216 33% 15%;
-
+    --foreground: 213 42% 15%;
+    --surface: 213 28% 97%;
+    --surface-foreground: 213 38% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 213 42% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 216 33% 15%;
+    --popover-foreground: 213 42% 15%;
+    --muted: 213 24% 96%;
+    --muted-foreground: 213 16% 38%;
 
-    --primary: 216 58% 25%;           /* navy */
+    /* Navy #143A6A — primary brand */
+    --primary: 213 68% 25%;
     --primary-foreground: 0 0% 100%;
+    --primary-hover: 213 68% 20%;
+    --primary-active: 213 68% 16%;
+    --primary-subtle: 213 50% 94%;
+    --primary-subtle-foreground: 213 68% 25%;
 
-    --secondary: 126 45% 33%;         /* forest green */
+    /* Green #3A733C — secondary brand (savings, efficiency, success).
+       Slightly deepened from the artwork's L34% to L28% so white text on a
+       green fill clears AA (7.2:1); the hue and saturation are unchanged. */
+    --secondary: 122 38% 28%;
     --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 122 38% 23%;
+    --secondary-active: 122 38% 19%;
+    --secondary-subtle: 122 40% 94%;
+    --secondary-subtle-foreground: 122 38% 23%;
 
-    --muted: 210 15% 96%;
-    --muted-foreground: 216 12% 42%;  /* text secondary */
+    /* Orange #F8732D — accent. `accent` is for fills/icons/indicators (never
+       text on light backgrounds); `accent-strong` is the AA-safe text tone. */
+    --accent: 21 94% 57%;
+    --accent-foreground: 213 68% 13%;
+    --accent-strong: 21 94% 38%;
+    --accent-strong-foreground: 0 0% 100%;
+    --accent-strong-hover: 21 94% 32%;
+    --accent-strong-active: 21 94% 27%;
+    --accent-subtle: 21 90% 95%;
+    --accent-subtle-foreground: 21 94% 32%;
 
-    --accent: 30 86% 53%;             /* orange — accent only */
-    --accent-foreground: 216 40% 14%; /* navy text for the rare orange fill */
+    /* Dark navy chrome — header, footer, inverted sections */
+    --nav: 213 68% 13%;
+    --nav-foreground: 213 30% 90%;
+    --nav-muted-foreground: 213 20% 77%;
+    --nav-border: 213 45% 28%;
 
-    --success: 126 45% 33%;
+    /* Feedback */
+    --success: 122 38% 28%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 48%;
-    --warning-foreground: 216 40% 14%;
-    --destructive: 0 72% 48%;         /* error */
+    --success-subtle: 122 40% 94%;
+    --warning: 33 92% 33%;
+    --warning-foreground: 0 0% 100%;
+    --warning-subtle: 38 92% 94%;
+    --destructive: 0 72% 42%;
     --destructive-foreground: 0 0% 100%;
+    --destructive-subtle: 0 76% 96%;
 
-    --border: 214 20% 90%;
-    --input: 214 20% 88%;
-    --ring: 30 86% 53%;               /* orange focus ring */
+    /* Lines & controls */
+    --border: 213 22% 89%;
+    --input: 213 22% 83%;
+    --ring: 21 94% 45%;
 
-    --radius: 0.375rem;
+    --radius: 0.625rem;
 
-    --nav: 216 52% 14%;               /* deep navy nav/footer */
-    --nav-foreground: 210 20% 92%;
-    --surface: 210 20% 97%;
-    --surface-foreground: 216 25% 24%;
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 216 30% 9%;
-    --foreground: 210 20% 92%;
-    --card: 216 28% 13%;
-    --card-foreground: 210 20% 92%;
-    --popover: 216 28% 13%;
-    --popover-foreground: 210 20% 92%;
-    --primary: 216 55% 55%;           /* lifted navy for dark surfaces */
-    --primary-foreground: 216 40% 10%;
-    --secondary: 126 40% 44%;         /* lifted green */
-    --secondary-foreground: 216 40% 10%;
-    --muted: 216 22% 18%;
-    --muted-foreground: 216 12% 62%;
-    --accent: 30 86% 55%;             /* orange */
-    --accent-foreground: 216 40% 12%;
-    --success: 126 40% 44%;
-    --success-foreground: 216 40% 10%;
-    --warning: 38 90% 52%;
-    --warning-foreground: 216 40% 12%;
-    --destructive: 0 62% 45%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 216 22% 22%;
-    --input: 216 22% 22%;
-    --ring: 30 86% 55%;
-    --nav: 216 40% 7%;
-    --nav-foreground: 210 20% 88%;
-    --surface: 216 28% 13%;
-    --surface-foreground: 210 20% 82%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    /* Kept for the shadcn sidebar primitive (unused by the public site). */
+    --sidebar-background: 213 28% 97%;
+    --sidebar-foreground: 213 42% 15%;
+    --sidebar-primary: 213 68% 25%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 213 24% 93%;
+    --sidebar-accent-foreground: 213 68% 25%;
+    --sidebar-border: 213 22% 89%;
+    --sidebar-ring: 21 94% 45%;
   }
 }
 
@@ -106,13 +122,60 @@
 
   html {
     @apply overflow-x-hidden;
+    scroll-behavior: smooth;
+    /* Offset anchor jumps so section headings clear the sticky header. */
+    scroll-padding-top: 5.5rem;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased overflow-x-hidden;
+    text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  /* A single, consistently branded focus indicator everywhere. Uses the
+     orange ring token, which clears 3:1 against both white and navy. */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Inside dark navy sections the ring offset must match that surface. */
+  .on-dark :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    @apply ring-offset-nav;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Shared eyebrow label above section headings. */
+  .eyebrow {
+    @apply text-sm font-semibold uppercase tracking-widest text-secondary;
+  }
+
+  .eyebrow-on-dark {
+    @apply text-sm font-semibold uppercase tracking-widest text-accent;
   }
 }
