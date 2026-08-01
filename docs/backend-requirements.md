@@ -41,7 +41,70 @@ through your API will fail on a customer photographing three bills.
 
 ---
 
-## Storage: Cloudflare R2 (recommended)
+## Storage: SharePoint (recommended — the tenant already exists)
+
+Murillo Consulting already runs Microsoft 365 (Bookings is live at
+`outlook.office.com/book/EnergyStrategy@murilloconsulting.co`), so SharePoint
+is already licensed, already governed, and already where Larry works.
+
+For a business this size that beats a hand-rolled object store, mainly
+because the compliance work is done for you:
+
+| | Hand-rolled R2/S3 | SharePoint |
+|---|---|---|
+| Encryption at rest | You configure it | Default |
+| Audit logging | You build it | Built in |
+| Retention / deletion | **You write and maintain a cron job** | Purview retention labels, automatic |
+| DLP, eDiscovery | No | Included |
+| Access control | A bucket policy you must not misconfigure | Entra ID + MFA |
+| Cost | A few dollars/month | Already paid for |
+
+**Two requirements:**
+
+1. **Use a SharePoint site document library, not personal OneDrive.**
+   OneDrive content is tied to a user account; if that licence is removed the
+   data is at risk. A site library is owned by the organisation.
+2. **Tenant sharing must allow "Anyone" links** for anonymous file requests
+   (SharePoint admin centre → Policies → Sharing). If your admin keeps that
+   disabled, use option B below, where the visitor authenticates against a
+   token you issue rather than a Microsoft anonymous link.
+
+### Option A — "Request files" link (no code)
+
+SharePoint/OneDrive folders support **Request files**: a link that lets
+someone upload *without signing in*, while being unable to see, download or
+delete anything already in the folder.
+
+This IS the two-step flow. **The website needs no changes** — the form
+already collects contact details and already promises "a secure link to share
+your recent bills". That link is the file request. Set an expiry on it;
+anonymous links can be forwarded.
+
+Start here. Move to B only if the SharePoint-hosted upload page is a problem.
+
+### Option B — in-site upload page via Microsoft Graph
+
+Keeps the client on murilloconsulting.com.
+
+- Entra ID app registration, `Sites.ReadWrite.All` (application permission),
+  client credentials in Vercel env vars
+- Function calls Graph `createUploadSession` on the target drive and returns
+  the session URL
+- **Browser PUTs chunks directly to Microsoft** — the bytes never pass
+  through your function, which is what sidesteps the 4.5 MB limit. Same shape
+  as an S3 presigned PUT.
+- Endpoints 2–4 below still apply (token issue / presign / finalize), with
+  Graph substituted for S3
+
+### Option C — Microsoft Forms
+
+Has a file-upload question type, but **file upload is believed to require
+respondents to sign in with a work or school account**, which rules it out
+for cold prospects. Verify current behaviour before considering it.
+
+---
+
+## Storage alternative: Cloudflare R2
 
 | | Why |
 |---|---|
@@ -50,6 +113,7 @@ through your API will fail on a customer photographing three bills.
 | Private by default | Buckets are only public if you explicitly attach a public domain — the safe state is the default |
 | Cost | Free tier covers this volume; pennies beyond it |
 
+Only worth it if you deliberately want to keep customer data out of M365.
 Choose **AWS S3** instead if you already run AWS — GuardDuty Malware
 Protection can scan objects on upload, which is a real advantage.
 
