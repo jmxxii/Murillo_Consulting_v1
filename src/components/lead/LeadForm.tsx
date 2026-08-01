@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, CheckCircle2, Info, Loader2, Send } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, Loader2, Lock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import FileDropzone from "@/components/lead/FileDropzone";
 import { siteConfig } from "@/content/site";
 import { dictionaries, LOCALES } from "@/i18n";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -45,13 +44,22 @@ interface LeadFormProps {
 }
 
 /**
- * Lead + bill submission form.
+ * Public lead form — contact details only, NO file upload.
  *
- * Validation lives in `createLeadSchema`, which is built from the active
- * dictionary — so every message is translated and switching language
- * re-derives the resolver. Attachments are validated client-side for fast
- * feedback only; the server must re-check everything (see
- * docs/backend-requirements.md).
+ * Energy bills carry the utility account number, service address and usage
+ * history. We deliberately do not collect them from an anonymous visitor:
+ *   - there is no public upload endpoint to spam, fuzz or push malware at
+ *   - bills are only ever stored for leads that are actually engaged
+ *   - consent is given in response to a specific request, not a checkbox
+ *
+ * After first contact, Larry emails a single-use, expiring link that uploads
+ * direct to private storage. That page reuses <FileDropzone>, which is why
+ * the component and its `t.form.upload` copy still exist.
+ * See docs/backend-requirements.md.
+ *
+ * Validation lives in `createLeadSchema`, built from the active dictionary,
+ * so every message is translated and switching language re-derives the
+ * resolver.
  */
 const LeadForm = ({
   campaign,
@@ -60,9 +68,7 @@ const LeadForm = ({
   className,
 }: LeadFormProps) => {
   const { t, locale } = useLanguage();
-  const [files, setFiles] = useState<File[]>([]);
   const [state, setState] = useState<SubmitState>("idle");
-  const [progress, setProgress] = useState<number | null>(null);
   const statusRef = useRef<HTMLDivElement>(null);
 
   const schema = useMemo(() => createLeadSchema(t), [t]);
@@ -89,13 +95,8 @@ const LeadForm = ({
 
   const onSubmit = async (values: LeadFormValues) => {
     setState("submitting");
-    setProgress(files.length > 0 ? 0 : null);
 
-    track({
-      name: "lead_form_submit",
-      has_files: files.length > 0,
-      file_count: files.length,
-    });
+    track({ name: "lead_form_submit", has_files: false, file_count: 0 });
 
     const result = await submitLead({
       payload: {
@@ -105,27 +106,14 @@ const LeadForm = ({
         submittedLocale: locale,
         campaign,
       },
-      files,
-      onProgress: files.length > 0 ? setProgress : undefined,
+      files: [],
     });
 
-    setProgress(null);
-
     if (result.status === "success") {
-      if (files.length > 0) {
-        track({
-          name: "bill_upload_complete",
-          file_count: files.length,
-          total_size_kb: Math.round(
-            files.reduce((sum, file) => sum + file.size, 0) / 1024,
-          ),
-        });
-      }
-      track({ name: "lead_form_success", file_count: files.length });
+      track({ name: "lead_form_success", file_count: 0 });
       if (campaign) track({ name: "campaign_conversion", campaign });
       setState("success");
       form.reset();
-      setFiles([]);
     } else if (result.status === "unconfigured") {
       track({ name: "lead_form_error", reason: "unconfigured" });
       setState("unconfigured");
@@ -419,18 +407,6 @@ const LeadForm = ({
             />
           </fieldset>
 
-          <fieldset disabled={submitting}>
-            <legend className="mb-4 text-xs font-semibold uppercase tracking-widest text-secondary">
-              {t.form.sectionFiles}
-            </legend>
-            <FileDropzone
-              files={files}
-              onChange={setFiles}
-              uploadProgress={progress}
-              disabled={submitting}
-            />
-          </fieldset>
-
           <fieldset disabled={submitting} className="space-y-5">
             <legend className="mb-4 text-xs font-semibold uppercase tracking-widest text-secondary">
               {t.form.sectionNotes}
@@ -486,6 +462,31 @@ const LeadForm = ({
               )}
             />
           </fieldset>
+
+          {/* Sets expectations, and explains why we are NOT asking for bills
+              here — an unexplained missing upload reads as an oversight. */}
+          <div className="rounded-md border border-border bg-surface p-5">
+            <h4 className="flex items-center gap-2 font-display text-sm font-semibold text-primary">
+              <Lock className="h-4 w-4 text-secondary" aria-hidden="true" />
+              {t.form.nextSteps.heading}
+            </h4>
+            <ol className="mt-3 space-y-2">
+              {t.form.nextSteps.items.map((item, index) => (
+                <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary-subtle text-xs font-semibold text-secondary-subtle-foreground"
+                  >
+                    {index + 1}
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
+              {t.form.nextSteps.whyNoUpload}
+            </p>
+          </div>
 
           <div>
             <Button

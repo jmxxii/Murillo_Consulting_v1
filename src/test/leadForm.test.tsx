@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { useState } from "react";
 import LeadForm from "@/components/lead/LeadForm";
+import FileDropzone from "@/components/lead/FileDropzone";
 import en from "@/i18n/en";
 import es from "@/i18n/es";
 import { createLeadSchema } from "@/lib/leadSchema";
@@ -174,25 +176,55 @@ describe("LeadForm rendering", () => {
     expect(screen.queryByText(en.form.errors.firstNameRequired)).toBeNull();
   });
 
-  it("states the accepted formats and size limit", () => {
+  it("does NOT collect files — bills are never taken from an anonymous visitor", () => {
+    const { container } = renderWithLocale(<LeadForm />, "en");
+    expect(container.querySelector('input[type="file"]')).toBeNull();
+    expect(screen.queryByText(/drag your bills here/i)).toBeNull();
+    expect(screen.queryByText(/browse your files/i)).toBeNull();
+  });
+
+  it("explains what happens next and why bills are not requested here", () => {
     renderWithLocale(<LeadForm />, "en");
+    expect(screen.getByText(en.form.nextSteps.heading)).toBeInTheDocument();
+    for (const step of en.form.nextSteps.items) {
+      expect(screen.getByText(step)).toBeInTheDocument();
+    }
+    expect(screen.getByText(en.form.nextSteps.whyNoUpload)).toBeInTheDocument();
+  });
+
+  it("does not ask consent to review bills it never receives", () => {
+    expect(en.form.consent).not.toMatch(/bill/i);
+    expect(es.form.consent).not.toMatch(/factura/i);
+  });
+});
+
+/**
+ * FileDropzone is not used by the public form. It backs the private,
+ * link-gated upload page, so it is tested directly.
+ */
+function DropzoneHarness() {
+  const [files, setFiles] = useState<File[]>([]);
+  return <FileDropzone files={files} onChange={setFiles} uploadProgress={null} />;
+}
+
+describe("FileDropzone (link-gated upload page)", () => {
+  it("states the accepted formats and size limit", () => {
+    renderWithLocale(<DropzoneHarness />, "en");
     expect(screen.getByText(/PDF, JPG, JPEG or PNG/)).toBeInTheDocument();
     expect(screen.getByText(/10 MB/)).toBeInTheDocument();
     expect(screen.getByText(new RegExp(`${MAX_FILES} files max`))).toBeInTheDocument();
   });
 
   it("restricts the file input to the supported types", () => {
-    const { container } = renderWithLocale(<LeadForm />, "en");
+    const { container } = renderWithLocale(<DropzoneHarness />, "en");
     const input = container.querySelector('input[type="file"]')!;
     expect(input.getAttribute("accept")).toContain("application/pdf");
     expect(input.getAttribute("accept")).toContain("image/png");
     expect(input).toHaveAttribute("multiple");
   });
-});
 
-describe("LeadForm upload behaviour", () => {
   it("accepts a valid PDF and lists it", async () => {
-    const { container } = renderWithLocale(<LeadForm />, "en");
+    const { container } = renderWithLocale(<DropzoneHarness />, "en");
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await act(async () => {
@@ -205,7 +237,7 @@ describe("LeadForm upload behaviour", () => {
   });
 
   it("rejects a disallowed type with a translated message", async () => {
-    const { container } = renderWithLocale(<LeadForm />, "es");
+    const { container } = renderWithLocale(<DropzoneHarness />, "es");
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await act(async () => {
@@ -221,7 +253,7 @@ describe("LeadForm upload behaviour", () => {
   });
 
   it("rejects an executable disguised as a PDF", async () => {
-    const { container } = renderWithLocale(<LeadForm />, "en");
+    const { container } = renderWithLocale(<DropzoneHarness />, "en");
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await act(async () => {
@@ -240,7 +272,7 @@ describe("LeadForm upload behaviour", () => {
   });
 
   it("rejects a file over the size limit", async () => {
-    const { container } = renderWithLocale(<LeadForm />, "en");
+    const { container } = renderWithLocale(<DropzoneHarness />, "en");
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await act(async () => {
@@ -292,26 +324,14 @@ describe("LeadForm submission", () => {
     expect(body.get("submittedLocale")).toBe("es");
   });
 
-  it("sends a sanitized filename, never the raw path", async () => {
-    const { container } = renderWithLocale(<LeadForm />, "en");
-    const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-
-    await act(async () => {
-      fireEvent.change(input, {
-        target: { files: [makeFile("../../secret/bill.pdf", "application/pdf")] },
-      });
-    });
-
-    expect(await screen.findByText("bill.pdf")).toBeInTheDocument();
-
+  it("posts no files — the public form has nothing to attach", async () => {
+    renderWithLocale(<LeadForm />, "en");
     fillValidForm(en);
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: new RegExp(en.form.submit, "i") }));
     });
-
     await screen.findByText(en.form.status.successBody);
-    const uploaded = FakeXhr.instances[0].body!.get("bills") as File;
-    expect(uploaded.name).toBe("bill.pdf");
+    expect(FakeXhr.instances[0].body!.getAll("bills")).toEqual([]);
   });
 
   it("attaches the campaign slug when submitted from a campaign page", async () => {

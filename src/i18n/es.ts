@@ -39,7 +39,7 @@ const es: Dictionary = {
     about: "Nosotros",
     faq: "Preguntas",
     contact: "Contacto",
-    primaryCta: "Envía tus facturas",
+    primaryCta: "Comienza tu análisis",
     languageLabel: "Idioma",
     languageSwitcherAria: "Seleccionar idioma",
   },
@@ -49,7 +49,7 @@ const es: Dictionary = {
     headline: "Mejores tarifas de energía para tu negocio, de manera simple.",
     supporting:
       "Murillo Consulting, LLC ayuda a los negocios a comparar opciones de electricidad y gas natural, identificar posibles ahorros y tomar decisiones informadas con asesoría personalizada.",
-    primaryCta: "Envía tus facturas",
+    primaryCta: "Comienza tu análisis",
     secondaryCta: "Conoce el proceso",
     imageAlt: "Dueño de negocio revisando sus facturas de energía",
     highlights: [
@@ -175,8 +175,8 @@ const es: Dictionary = {
   billCta: {
     eyebrow: "Comienza",
     heading: "¿Listo para conocer las opciones disponibles para tu negocio?",
-    body: "Envía tus facturas recientes de energía y Murillo Consulting comenzará la revisión. El análisis inicial generalmente se completa dentro de 3 a 4 días hábiles después de recibir toda la información necesaria.",
-    primaryCta: "Envía tus facturas",
+    body: "Cuéntanos sobre tu negocio y Murillo Consulting te enviará un enlace seguro para compartir tus facturas recientes de energía. El análisis inicial generalmente se completa dentro de 3 a 4 días hábiles después de recibir toda la información necesaria.",
+    primaryCta: "Comienza tu análisis",
     secondaryCta: "Primero tengo una pregunta",
   },
 
@@ -231,7 +231,7 @@ const es: Dictionary = {
       {
         question: "¿Murillo Consulting puede ayudar a negocios con varias ubicaciones?",
         answer:
-          "Sí. Si tienes más de una ubicación, dinos cuántas al enviar tu información e incluye las facturas de cada cuenta que quieras que revisemos.",
+          "Sí. Dinos cuántas ubicaciones tienes cuando nos escribas, y el enlace seguro que te enviemos te permitirá compartir las facturas de cada cuenta que quieras que revisemos.",
       },
       {
         question: "¿Hay atención en español?",
@@ -262,10 +262,9 @@ const es: Dictionary = {
     heading: "Envía tus facturas",
     introHeading: "¿Listo para conocer las opciones disponibles para tu negocio?",
     introBody:
-      "Envía tus facturas recientes de energía y Murillo Consulting comenzará la revisión. El análisis inicial generalmente se completa dentro de 3 a 4 días hábiles después de recibir toda la información necesaria.",
+      "Cuéntanos un poco sobre tu negocio y Murillo Consulting te enviará un enlace seguro para compartir tus facturas recientes de energía. El análisis inicial generalmente se completa dentro de 3 a 4 días hábiles después de recibir toda la información necesaria.",
     sectionContact: "Tu información de contacto",
     sectionBusiness: "Sobre tu negocio",
-    sectionFiles: "Tus facturas de energía",
     sectionNotes: "Algo más",
 
     firstName: "Nombre",
@@ -285,11 +284,11 @@ const es: Dictionary = {
     notesPlaceholder:
       "Lo que quieras que sepamos, por ejemplo fechas de contrato próximas o preguntas que tengas.",
     consent:
-      "Acepto que Murillo Consulting me contacte sobre mis opciones de energía y revise las facturas que envío.",
+      "Acepto que Murillo Consulting me contacte sobre mis opciones de energía.",
     consentHelp:
       "Usamos tu información únicamente para preparar y platicar tu análisis de energía.",
 
-    submit: "Envía tus facturas",
+    submit: "Comienza tu análisis",
     submitting: "Enviando…",
     submitAnother: "Enviar otro negocio",
 
@@ -305,7 +304,18 @@ const es: Dictionary = {
       uploadingLabel: "Progreso de la subida",
       noFiles: "Todavía no has seleccionado archivos.",
       helpText:
-        "Tus facturas se usan únicamente para preparar tu análisis. Si prefieres no subirlas aquí, puedes enviarlas por correo electrónico.",
+        "Tus facturas se usan únicamente para preparar tu análisis y se guardan de forma privada.",
+    },
+
+    nextSteps: {
+      heading: "Qué sigue",
+      items: [
+        "Revisamos lo que nos enviaste y confirmamos que podemos ayudarte.",
+        "Larry te envía por correo un enlace seguro y de un solo uso para compartir tus facturas recientes.",
+        "El análisis inicial generalmente se completa dentro de 3 a 4 días hábiles después de recibir toda la información necesaria.",
+      ],
+      whyNoUpload:
+        "En esta página no te pedimos las facturas. Las facturas de energía contienen tu número de cuenta y tu historial de consumo, así que las recibimos por un enlace privado que se envía solo a ti.",
     },
 
     errors: {
@@ -334,13 +344,13 @@ const es: Dictionary = {
     status: {
       successTitle: "Gracias",
       successBody:
-        "Gracias. Recibimos tu información. Un representante de Murillo Consulting revisará tu solicitud y se comunicará contigo para explicarte los próximos pasos.",
+        "Gracias. Recibimos tu información. Larry Murillo la revisará y te enviará por correo un enlace seguro para que compartas tus facturas recientes de energía.",
       errorTitle: "No pudimos enviar tu información",
       errorBody:
-        "Algo salió mal de nuestro lado. Inténtalo de nuevo o envíanos tus facturas directamente usando los datos de contacto que aparecen abajo.",
+        "Algo salió mal de nuestro lado. Inténtalo de nuevo o comunícate directamente con nosotros usando los datos que aparecen abajo.",
       unconfiguredTitle: "El envío en línea todavía no está disponible",
       unconfiguredBody:
-        "Este formulario aún no está conectado a un servicio de envío. Envía tus facturas directamente a Murillo Consulting usando los datos de contacto que aparecen abajo y comenzamos de inmediato.",
+        "Este formulario aún no está conectado a un servicio de envío. Comunícate directamente con Murillo Consulting usando los datos que aparecen abajo y comenzamos de inmediato.",
       retry: "Inténtalo de nuevo",
     },
   },

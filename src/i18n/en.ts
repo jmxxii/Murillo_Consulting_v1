@@ -40,7 +40,7 @@ const en = {
     about: "About",
     faq: "FAQ",
     contact: "Contact",
-    primaryCta: "Submit Your Bills",
+    primaryCta: "Start Your Analysis",
     languageLabel: "Language",
     languageSwitcherAria: "Select a language",
   },
@@ -50,7 +50,7 @@ const en = {
     headline: "Better energy rates for your business, made simple.",
     supporting:
       "Murillo Consulting, LLC helps businesses compare electricity and natural gas options, identify potential savings, and make informed decisions with personalized guidance.",
-    primaryCta: "Submit Your Bills",
+    primaryCta: "Start Your Analysis",
     secondaryCta: "See How It Works",
     imageAlt: "Business owner reviewing energy bills",
     highlights: [
@@ -176,8 +176,8 @@ const en = {
   billCta: {
     eyebrow: "Get started",
     heading: "Ready to explore the options available to your business?",
-    body: "Submit your recent energy bills and Murillo Consulting will begin the review. The initial analysis is generally completed within 3 to 4 business days after all required information is received.",
-    primaryCta: "Submit Your Bills",
+    body: "Tell us about your business and Murillo Consulting will send you a secure link to share your recent energy bills. The initial analysis is generally completed within 3 to 4 business days after all required information is received.",
+    primaryCta: "Start Your Analysis",
     secondaryCta: "Ask a question first",
   },
 
@@ -232,7 +232,7 @@ const en = {
       {
         question: "Can Murillo Consulting help businesses with multiple locations?",
         answer:
-          "Yes. If you operate more than one location, let us know how many when you submit your information and include the bills for each account you would like reviewed.",
+          "Yes. Tell us how many locations you operate when you get in touch, and the secure link we send you will let you share the bills for each account you would like reviewed.",
       },
       {
         question: "Is service available in Spanish?",
@@ -263,10 +263,9 @@ const en = {
     heading: "Submit your bills",
     introHeading: "Ready to explore the options available to your business?",
     introBody:
-      "Submit your recent energy bills and Murillo Consulting will begin the review. The initial analysis is generally completed within 3 to 4 business days after all required information is received.",
+      "Tell us a little about your business and Murillo Consulting will send you a secure link to share your recent energy bills. The initial analysis is generally completed within 3 to 4 business days after all required information is received.",
     sectionContact: "Your contact information",
     sectionBusiness: "About your business",
-    sectionFiles: "Your energy bills",
     sectionNotes: "Anything else",
 
     firstName: "First name",
@@ -286,14 +285,19 @@ const en = {
     notesPlaceholder:
       "Anything you would like us to know — for example, upcoming contract dates or questions you have.",
     consent:
-      "I agree that Murillo Consulting may contact me about my energy options and may review the bills I submit.",
+      "I agree that Murillo Consulting may contact me about my energy options.",
     consentHelp:
       "We use your information only to prepare and discuss your energy analysis.",
 
-    submit: "Submit Your Bills",
+    submit: "Start Your Analysis",
     submitting: "Sending…",
     submitAnother: "Submit another business",
 
+    /**
+     * Used by the private, link-gated upload page — NOT by the public form.
+     * Bills are never collected from an anonymous visitor; Larry emails a
+     * single-use link after first contact. See docs/backend-requirements.md.
+     */
     upload: {
       label: "Upload your bills",
       dropzone: "Drag your bills here, or",
@@ -306,7 +310,18 @@ const en = {
       uploadingLabel: "Upload progress",
       noFiles: "No files selected yet.",
       helpText:
-        "Your bills are used only to prepare your analysis. If you would rather not upload them here, you can email them instead.",
+        "Your bills are used only to prepare your analysis and are stored privately.",
+    },
+
+    nextSteps: {
+      heading: "What happens next",
+      items: [
+        "We review what you sent and confirm we can help.",
+        "Larry emails you a secure, single-use link to share your recent bills.",
+        "The initial analysis is generally completed within 3 to 4 business days after all required information is received.",
+      ],
+      whyNoUpload:
+        "We do not ask for bills on this page. Energy bills contain your account number and usage history, so we collect them through a private link sent only to you.",
     },
 
     errors: {
@@ -335,13 +350,13 @@ const en = {
     status: {
       successTitle: "Thank you",
       successBody:
-        "Thank you. We received your information. A representative from Murillo Consulting will review your submission and contact you regarding the next steps.",
+        "Thank you. We received your information. Larry Murillo will review it and email you a secure link so you can share your recent energy bills.",
       errorTitle: "We could not send your information",
       errorBody:
-        "Something went wrong on our end. Please try again, or send your bills to us directly using the contact details below.",
+        "Something went wrong on our end. Please try again, or contact us directly using the details below.",
       unconfiguredTitle: "Online submission is not available yet",
       unconfiguredBody:
-        "This form is not connected to a submission service yet. Please send your bills to Murillo Consulting directly using the contact details below and we will get started.",
+        "This form is not connected to a submission service yet. Please contact Murillo Consulting directly using the details below and we will get started.",
       retry: "Try again",
     },
   },
