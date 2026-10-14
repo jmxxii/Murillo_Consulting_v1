@@ -238,7 +238,9 @@ Vercel reserves `AWS_*` variable names, which is why ours start with `APP_`.
 SES sends one short email per new inquiry: the business name and a link to
 `/admin`. No bill data and no contact details.
 
-1. SES (region `us-east-2`) → Identities → Create identity → **Domain** →
+1. Open <https://us-east-2.console.aws.amazon.com/ses/home?region=us-east-2#/identities>
+   (or SES → ☰ menu → Configuration → **Identities**). Skip the landing page's
+   "Get started" wizard; it is not needed. Create identity → **Domain** →
    `murilloconsulting.co`. Under "Verifying your domain", keep **Easy DKIM**,
    RSA 2048-bit. Leave "custom MAIL FROM" off. Create.
 2. SES shows **three CNAME records**. Add them at the DNS host for
