@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, CheckCircle2, Info, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,7 +66,7 @@ const LeadForm = ({
   submitLabel,
   className,
 }: LeadFormProps) => {
-  const { t, locale, format } = useLanguage();
+  const { t, locale, format, path } = useLanguage();
   const [state, setState] = useState<SubmitState>("idle");
   const [files, setFiles] = useState<File[]>([]);
   const [progress, setProgress] = useState<number | null>(null);
@@ -572,6 +573,17 @@ const LeadForm = ({
                 </>
               )}
             </Button>
+
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              {t.form.privacyNotice}{" "}
+              <Link
+                to={path("/privacy")}
+                className="rounded-sm font-semibold text-accent-strong underline underline-offset-2"
+              >
+                {t.form.privacyLink}
+              </Link>
+              .
+            </p>
 
             {!isSubmissionConfigured() && (
               <p className="mt-3 text-xs text-muted-foreground">

@@ -292,6 +292,8 @@ const es: Dictionary = {
     submit: "Envía tus facturas",
     submitting: "Enviando…",
     submitAnother: "Enviar otro negocio",
+    privacyNotice: "Al enviar, aceptas que manejemos tu información como se describe en nuestra",
+    privacyLink: "Política de privacidad",
 
     upload: {
       label: "Sube tus facturas",
@@ -362,6 +364,7 @@ const es: Dictionary = {
       "Murillo Consulting, LLC ofrece servicios de asesoría en energía. Los ahorros no están garantizados. Las opciones disponibles dependen de tu compañía de servicios públicos, tu cuenta y las condiciones del mercado.",
     rights: "Todos los derechos reservados.",
     languageHeading: "Idioma",
+    privacyLink: "Política de privacidad",
   },
 
   notFound: {
@@ -369,6 +372,78 @@ const es: Dictionary = {
     heading: "No encontramos esa página",
     body: "Puede que la página que buscas se haya movido o que ya no exista.",
     cta: "Ir a la página de inicio",
+  },
+
+  privacy: {
+    heading: "Política de privacidad",
+    updated: "Última actualización: 13 de octubre de 2026",
+    intro:
+      "Esta política explica qué información recopila Murillo Consulting, LLC a través de este sitio web, cómo la usamos y qué opciones tienes. Aplica a murilloconsulting.co.",
+    sections: [
+      {
+        heading: "Información que recopilamos",
+        body: [
+          "Cuando envías nuestro formulario, recopilamos los datos que nos das: tu nombre, el nombre de tu negocio, tu correo electrónico, tu teléfono, la ubicación del negocio, tu idioma preferido, el número de ubicaciones y cualquier nota.",
+          "Si subes facturas de energía, recibimos el contenido de esos archivos. Las facturas pueden incluir tu número de cuenta con la compañía de servicios, la dirección del servicio, tu historial de consumo y los montos facturados.",
+          "Como la mayoría de los sitios web, nuestros proveedores de alojamiento y seguridad procesan automáticamente información técnica básica, como tu dirección IP y el tipo de navegador, para mostrar el sitio y protegerlo contra abusos.",
+        ],
+      },
+      {
+        heading: "Cómo usamos tu información",
+        body: [
+          "Usamos tu información para revisar tus costos de energía, preparar tu análisis, contactarte sobre tus opciones, responder tus preguntas y mantener seguro este sitio web.",
+          "No vendemos tu información personal ni la usamos para publicidad.",
+        ],
+      },
+      {
+        heading: "Cómo la guardamos y protegemos",
+        body: [
+          "Tu información y tus archivos se guardan con proveedores de servicios en la nube en Estados Unidos. Están cifrados, se mantienen privados y solo los miembros autorizados de nuestro equipo pueden acceder a ellos.",
+          "Ningún método de almacenamiento o transmisión es completamente seguro, pero tomamos medidas razonables para proteger tu información.",
+        ],
+      },
+      {
+        heading: "Cuánto tiempo la conservamos",
+        body: [
+          "Los formularios y las facturas enviados por este sitio web se eliminan automáticamente unos 90 días después de que los envías. Si te conviertes en cliente, podemos conservar la información que necesitamos para darte nuestros servicios, o por más tiempo si la ley lo exige.",
+        ],
+      },
+      {
+        heading: "Con quién la compartimos",
+        body: [
+          "Compartimos tu información solo con proveedores que nos ayudan a operar este sitio web y nuestro negocio, como el alojamiento del sitio (Vercel), el almacenamiento seguro y el envío de correos (Amazon Web Services), la protección contra spam (Cloudflare) y el correo de la empresa (Microsoft). Solo pueden usarla para darnos sus servicios.",
+          "También podemos compartir información cuando tú nos lo pides, por ejemplo para solicitar precios a un proveedor de energía en tu nombre, o cuando la ley lo exige.",
+        ],
+      },
+      {
+        heading: "Cookies y la verificación de seguridad",
+        body: [
+          "Este sitio web no usa cookies de publicidad. Nuestro formulario usa Cloudflare Turnstile para distinguir a los visitantes reales del spam automatizado. Para eso puede recopilar información sobre tu dispositivo y tu navegador, como se describe en la política de privacidad de Cloudflare.",
+        ],
+      },
+      {
+        heading: "Tus opciones",
+        body: [
+          "Puedes pedirnos en cualquier momento que te digamos qué información tenemos sobre ti, que la corrijamos o que la eliminemos. Escríbenos y te responderemos en un tiempo razonable.",
+        ],
+      },
+      {
+        heading: "Menores de edad",
+        body: [
+          "Este sitio web está pensado para negocios y no está dirigido a menores de 13 años. No recopilamos a sabiendas información de menores.",
+        ],
+      },
+      {
+        heading: "Cambios a esta política",
+        body: [
+          "Podemos actualizar esta política de vez en cuando. La fecha de arriba indica cuándo cambió por última vez.",
+        ],
+      },
+      {
+        heading: "Contáctanos",
+        body: ["¿Tienes preguntas sobre esta política o tu información? Escríbenos a:"],
+      },
+    ],
   },
 
   seo: {
@@ -379,6 +454,9 @@ const es: Dictionary = {
     notFoundTitle: "Página no encontrada | Murillo Consulting, LLC",
     notFoundDescription:
       "No pudimos encontrar la página que buscas. Vuelve a la página de inicio de Murillo Consulting.",
+    privacyTitle: "Política de privacidad | Murillo Consulting, LLC",
+    privacyDescription:
+      "Cómo Murillo Consulting recopila, usa, guarda y elimina la información y las facturas de energía que compartes en este sitio web.",
   },
 };
 

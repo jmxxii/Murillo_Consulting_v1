@@ -8,6 +8,7 @@ import LocaleRedirect from "@/components/layout/LocaleRedirect";
 import Home from "@/pages/Home";
 import CampaignPage from "@/pages/CampaignPage";
 import NotFound from "@/pages/NotFound";
+import Privacy from "@/pages/Privacy";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const queryClient = new QueryClient();
  *   /campaigns/:slug       English campaign
  *   /es                    Spanish homepage
  *   /es/campaigns/:slug    Spanish campaign
+ *   /privacy, /es/privacy  Privacy policy
  *
  * Each locale branch has its own <SiteLayout>, which supplies the language to
  * the whole subtree. The URL is authoritative: a link to /es always renders in
@@ -31,6 +33,7 @@ const AppRoutes = () => (
     <Route path="/es" element={<SiteLayout locale="es" />}>
       <Route index element={<Home />} />
       <Route path="campaigns/:slug" element={<CampaignPage />} />
+      <Route path="privacy" element={<Privacy />} />
       <Route path="*" element={<NotFound />} />
     </Route>
 
@@ -44,6 +47,7 @@ const AppRoutes = () => (
         }
       />
       <Route path="campaigns/:slug" element={<CampaignPage />} />
+      <Route path="privacy" element={<Privacy />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   </Routes>

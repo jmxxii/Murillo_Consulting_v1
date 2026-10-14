@@ -136,7 +136,7 @@ synchronized, so the admin UI must handle "file expired" gracefully.
 ## Still open (raise with the user, do not block on)
 
 - Vercel Hobby is non-commercial only; a business site should be on Pro.
-- The form needs a privacy notice (stores bills; Turnstile loads a Cloudflare script).
+- A general privacy policy is live at `/privacy` and `/es/privacy` (copy in `t.privacy`). Have a lawyer review it before launch.
 
 ## Repo context for whoever picks this up
 

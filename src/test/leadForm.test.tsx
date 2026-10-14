@@ -479,3 +479,13 @@ describe("LeadForm submission", () => {
     );
   });
 });
+
+describe("LeadForm privacy notice", () => {
+  it("links to the privacy policy in the visitor's language", () => {
+    renderWithLocale(<LeadForm />, "es", ["/es"]);
+    expect(screen.getByRole("link", { name: es.form.privacyLink })).toHaveAttribute(
+      "href",
+      "/es/privacy",
+    );
+  });
+});

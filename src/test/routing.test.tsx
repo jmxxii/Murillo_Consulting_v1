@@ -297,3 +297,17 @@ describe("page metadata", () => {
     expect(org.areaServed).toBeUndefined();
   });
 });
+
+describe("privacy policy", () => {
+  it("renders in both languages and is linked from the footer and the form", () => {
+    for (const [dict, url] of [
+      [en, "/privacy"],
+      [es, "/es/privacy"],
+    ] as const) {
+      const { unmount } = renderAt(url);
+      expect(screen.getByRole("heading", { level: 1, name: dict.privacy.heading })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: dict.footer.privacyLink })).toHaveAttribute("href", url);
+      unmount();
+    }
+  });
+});

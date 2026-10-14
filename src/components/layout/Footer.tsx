@@ -1,4 +1,5 @@
 import { Mail, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import { SECTION_IDS, siteConfig, telHref } from "@/content/site";
@@ -91,7 +92,10 @@ const Footer = () => {
             {t.footer.disclaimer}
           </p>
           <p className="mt-4 text-xs text-nav-muted-foreground/80">
-            &copy; {new Date().getFullYear()} {t.common.companyName}. {t.footer.rights}
+            &copy; {new Date().getFullYear()} {t.common.companyName}. {t.footer.rights}{" "}
+            <Link to={path("/privacy")} className="rounded-sm underline underline-offset-2 hover:text-nav-foreground">
+              {t.footer.privacyLink}
+            </Link>
           </p>
         </div>
       </div>

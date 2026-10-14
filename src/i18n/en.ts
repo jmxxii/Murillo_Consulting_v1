@@ -293,6 +293,8 @@ const en = {
     submit: "Submit Your Bills",
     submitting: "Sending…",
     submitAnother: "Submit another business",
+    privacyNotice: "By submitting, you agree to how we handle your information as described in our",
+    privacyLink: "Privacy Policy",
 
     upload: {
       label: "Upload your bills",
@@ -363,6 +365,7 @@ const en = {
       "Murillo Consulting, LLC provides energy consulting services. Savings are not guaranteed. Available options depend on your utility, account, and market conditions.",
     rights: "All rights reserved.",
     languageHeading: "Language",
+    privacyLink: "Privacy Policy",
   },
 
   notFound: {
@@ -370,6 +373,78 @@ const en = {
     heading: "We could not find that page",
     body: "The page you are looking for may have been moved or no longer exists.",
     cta: "Go to the homepage",
+  },
+
+  privacy: {
+    heading: "Privacy Policy",
+    updated: "Last updated: October 13, 2026",
+    intro:
+      "This policy explains what information Murillo Consulting, LLC collects through this website, how we use it, and the choices you have. It applies to murilloconsulting.co.",
+    sections: [
+      {
+        heading: "Information we collect",
+        body: [
+          "When you submit our form, we collect the details you provide: your name, business name, email address, phone number, business location, preferred language, number of locations, and any notes.",
+          "If you upload energy bills, we receive the contents of those files. Bills can include your utility account number, service address, usage history and billing amounts.",
+          "Like most websites, our hosting and security providers automatically process basic technical information, such as your IP address and browser type, to deliver the site and protect it from abuse.",
+        ],
+      },
+      {
+        heading: "How we use your information",
+        body: [
+          "We use your information to review your energy costs, prepare your analysis, contact you about your options, answer your questions, and keep this website secure.",
+          "We do not sell your personal information, and we do not use it for advertising.",
+        ],
+      },
+      {
+        heading: "How we store and protect it",
+        body: [
+          "Your information and files are stored with cloud providers in the United States. They are encrypted, kept private, and only authorized members of our team can access them.",
+          "No method of storage or transmission is completely secure, but we take reasonable steps to protect your information.",
+        ],
+      },
+      {
+        heading: "How long we keep it",
+        body: [
+          "Form submissions and bills sent through this website are deleted automatically about 90 days after you submit them. If you become a client, we may keep the information we need to provide our services, or longer if the law requires it.",
+        ],
+      },
+      {
+        heading: "Who we share it with",
+        body: [
+          "We share your information only with service providers that help us run this website and our business, such as website hosting (Vercel), secure storage and email delivery (Amazon Web Services), spam protection (Cloudflare) and business email (Microsoft). They may use it only to provide their services to us.",
+          "We may also share information when you ask us to, for example to request pricing from an energy supplier on your behalf, or when required by law.",
+        ],
+      },
+      {
+        heading: "Cookies and the security check",
+        body: [
+          "This website does not use advertising cookies. Our form uses Cloudflare Turnstile to tell real visitors from automated spam. It may collect information about your device and browser for that purpose, as described in Cloudflare's privacy policy.",
+        ],
+      },
+      {
+        heading: "Your choices",
+        body: [
+          "You can ask us to tell you what information we have about you, correct it, or delete it at any time. Email us and we will respond within a reasonable time.",
+        ],
+      },
+      {
+        heading: "Children",
+        body: [
+          "This website is meant for businesses and is not directed at children under 13. We do not knowingly collect information from children.",
+        ],
+      },
+      {
+        heading: "Changes to this policy",
+        body: [
+          "We may update this policy from time to time. The date at the top shows when it last changed.",
+        ],
+      },
+      {
+        heading: "Contact us",
+        body: ["Questions about this policy or your information? Contact us at:"],
+      },
+    ],
   },
 
   seo: {
@@ -380,6 +455,9 @@ const en = {
     notFoundTitle: "Page not found | Murillo Consulting, LLC",
     notFoundDescription:
       "The page you are looking for could not be found. Return to the Murillo Consulting homepage.",
+    privacyTitle: "Privacy Policy | Murillo Consulting, LLC",
+    privacyDescription:
+      "How Murillo Consulting collects, uses, stores and deletes the information and energy bills you share through this website.",
   },
 } as const;
 
