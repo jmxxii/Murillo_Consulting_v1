@@ -2,6 +2,22 @@
 
 **Status: not implemented.** This repository is a static SPA with no server.
 
+## Start here: the simple setup (no backend)
+
+This is the recommended setup. Everything below it is only needed if this
+stops being enough.
+
+1. **Lead form → a form service.** Create a form at Formspree (or similar)
+   and set `VITE_LEAD_ENDPOINT` to its URL in Vercel's environment settings.
+   It receives contact details only, never bills, and emails them to Larry.
+   Spam filtering is included. Check the free plan's monthly limit.
+2. **Bills → SharePoint "Request files" link.** Larry replies to each lead
+   with an upload-only link to a folder in a SharePoint site library (not
+   personal OneDrive). Set an expiry on the link. See "Option A" below.
+
+Nothing in this setup stores bills outside Microsoft 365, and no code you
+own touches them.
+
 ## The chosen architecture: two-step intake
 
 Bills are **never** collected from an anonymous visitor.

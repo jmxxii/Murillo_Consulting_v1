@@ -98,6 +98,10 @@ export function submitLead({
   return new Promise((resolve) => {
     const request = new XMLHttpRequest();
     request.open("POST", endpoint, true);
+    // Form services (Formspree etc.) answer a non-JSON request with a
+    // redirect to a captcha/thank-you page. XHR follows it, sees 200, and we
+    // would report success for a submission that was never recorded.
+    request.setRequestHeader("Accept", "application/json");
     request.responseType = "json";
     request.timeout = 120_000;
 

@@ -26,6 +26,7 @@ class FakeXhr {
   body: FormData | null = null;
 
   open = vi.fn();
+  setRequestHeader = vi.fn();
   addEventListener(name: string, handler: () => void) {
     (this.listeners[name] ??= []).push(handler);
   }
@@ -332,6 +333,19 @@ describe("LeadForm submission", () => {
     });
     await screen.findByText(en.form.status.successBody);
     expect(FakeXhr.instances[0].body!.getAll("bills")).toEqual([]);
+  });
+
+  it("asks for JSON, so a form service cannot redirect us into a false success", async () => {
+    renderWithLocale(<LeadForm />, "en");
+    fillValidForm(en);
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: new RegExp(en.form.submit, "i") }));
+    });
+    await screen.findByText(en.form.status.successBody);
+    expect(FakeXhr.instances[0].setRequestHeader).toHaveBeenCalledWith(
+      "Accept",
+      "application/json",
+    );
   });
 
   it("attaches the campaign slug when submitted from a campaign page", async () => {
