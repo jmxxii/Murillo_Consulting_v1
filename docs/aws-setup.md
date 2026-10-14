@@ -21,11 +21,19 @@ Several services need the exact site addresses, so write them down now:
 ## 1. AWS account
 
 1. Create an AWS account (or use the existing one) and sign in to the console.
-2. Top right, set the region to **US East (N. Virginia) `us-east-1`**. Every
-   resource below goes in this region. **→ `APP_AWS_REGION` = `us-east-1`**
-3. Billing → Budgets → create a **zero-spend budget** or a small monthly budget
-   (e.g. $5) with an email alert. AWS changed its free tier for new accounts in
-   2025, so check the current terms on the signup page.
+2. Every resource below goes in **US East (N. Virginia) `us-east-1`**.
+   **→ `APP_AWS_REGION` = `us-east-1`**. Console Home has no region picker;
+   it appears top right (next to the account name) once you open a regional
+   service. The quickest way in is
+   <https://us-east-1.console.aws.amazon.com/dynamodbv2/home?region=us-east-1>.
+   CloudShell then opens in that region too.
+3. **Account plan.** New accounts start on the AWS *free plan*: credits plus
+   a free period (about 6 months). When it ends, AWS services stop working
+   unless the account is upgraded, which would take the form and `/admin`
+   down. Testing on the free plan is fine; **upgrade to the paid plan before
+   launch** (Billing → upgrade plan). Remaining credits carry over. Then, in
+   Billing → Budgets, create a small monthly budget (e.g. $5) with an email
+   alert.
 4. Note your 12-digit **account ID** (top right menu). The commands below call it
    `ACCOUNT_ID`.
 
