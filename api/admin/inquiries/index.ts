@@ -53,5 +53,5 @@ export async function GET(request: Request): Promise<Response> {
       fileCount: item.files.length,
     }));
 
-  return json({ user, inquiries });
+  return json({ inquiries });
 }

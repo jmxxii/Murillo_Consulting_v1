@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SiteLayout from "@/components/layout/SiteLayout";
 import LocaleRedirect from "@/components/layout/LocaleRedirect";
@@ -12,6 +13,9 @@ import Privacy from "@/pages/Privacy";
 
 const queryClient = new QueryClient();
 
+// Staff-only; a separate chunk so public visitors never download it.
+const AdminApp = lazy(() => import("@/admin/AdminApp"));
+
 /**
  * Routing.
  *
@@ -20,6 +24,7 @@ const queryClient = new QueryClient();
  *   /es                    Spanish homepage
  *   /es/campaigns/:slug    Spanish campaign
  *   /privacy, /es/privacy  Privacy policy
+ *   /admin/*               Staff inquiry review (English only, lazy-loaded)
  *
  * Each locale branch has its own <SiteLayout>, which supplies the language to
  * the whole subtree. The URL is authoritative: a link to /es always renders in
@@ -30,6 +35,15 @@ const queryClient = new QueryClient();
  */
 const AppRoutes = () => (
   <Routes>
+    <Route
+      path="/admin/*"
+      element={
+        <Suspense fallback={null}>
+          <AdminApp />
+        </Suspense>
+      }
+    />
+
     <Route path="/es" element={<SiteLayout locale="es" />}>
       <Route index element={<Home />} />
       <Route path="campaigns/:slug" element={<CampaignPage />} />

@@ -1,6 +1,6 @@
 # Plan: AWS inquiry storage + admin page
 
-**Status:** steps 1 (`docs/aws-setup.md`), 2 (API in `/api`) and 3 (public form) done; step 4 (admin page) next.
+**Status:** steps 1 to 4 done (setup guide, API, public form, admin page in `src/admin/`). Step 5 (end-to-end check on the development preview) waits on the accounts in `docs/aws-setup.md`.
 This replaces the "simple setup" (Formspree + SharePoint) at the top of
 `docs/backend-requirements.md`. Where the two disagree, this file wins.
 
@@ -67,9 +67,10 @@ origin, not ours, and cannot reach the admin session cookie.
 |---|---|---|
 | `POST /api/inquiries` | Public + Turnstile | Validate, save, return upload slots |
 | `POST /api/inquiries/:id/complete` | Public | Verify files, mark New, email Larry |
-| `GET /api/admin/auth/login` | Anyone | Redirect to Microsoft (OIDC code flow, state + PKCE in a short-lived cookie) |
+| `GET /api/admin/auth/login` | Anyone | Redirect to Microsoft (OIDC code flow, state + PKCE in a short-lived cookie). `?returnTo=/admin/...` is honored only for paths inside `/admin` |
 | `GET /api/admin/auth/callback` | Microsoft | Exchange code, verify ID token (issuer, audience, `tid` == our tenant), set session cookie |
 | `POST /api/admin/auth/logout` | Admin | Clear session |
+| `GET /api/admin/auth/me` | Admin | Signed-in user, or 401. The admin page's sign-in gate |
 | `GET /api/admin/inquiries` | Admin | List, newest first, `?status=` filter |
 | `GET /api/admin/inquiries/:id` | Admin | Details + presigned view/download URLs |
 | `PATCH /api/admin/inquiries/:id` | Admin | Change status |

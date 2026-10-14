@@ -37,7 +37,7 @@ export async function GET(request: Request): Promise<Response> {
     SESSION_TTL_SECONDS,
     "session",
   );
-  return redirect("/admin", [
+  return redirect(String(pending.returnTo ?? "/admin"), [
     clearPending,
     setCookie(SESSION_COOKIE, session, SESSION_TTL_SECONDS, SESSION_COOKIE_PATH),
   ]);

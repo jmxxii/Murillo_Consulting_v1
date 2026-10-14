@@ -1,6 +1,7 @@
 import { createRemoteJWKSet, generateKeyPair, SignJWT } from "jose";
 import { GET as callback } from "../admin/auth/callback.js";
 import { GET as login } from "../admin/auth/login.js";
+import { GET as me } from "../admin/auth/me.js";
 import { POST as logout } from "../admin/auth/logout.js";
 import { requireAdmin } from "../_lib/session.js";
 import { request } from "./helpers.js";
@@ -28,8 +29,9 @@ function cookieValue(res: Response, name: string) {
 }
 
 /** Runs login, then returns what Microsoft would send back to the callback. */
-async function startSignIn() {
-  const res = await login();
+async function startSignIn(returnTo?: string) {
+  const query = returnTo === undefined ? "" : `?returnTo=${encodeURIComponent(returnTo)}`;
+  const res = await login(request(`/api/admin/auth/login${query}`));
   const location = new URL(res.headers.get("location")!);
   return {
     location,
@@ -125,6 +127,32 @@ describe("admin sign-in", () => {
 
     expect(res.headers.get("location")).toBe("/admin?error=signin");
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["/admin/inquiries/0b9c6a44-3a2f-4e8e-9d6b-2f1f6a7c8d90", "/admin/inquiries/0b9c6a44-3a2f-4e8e-9d6b-2f1f6a7c8d90"],
+    ["https://evil.example/admin", "/admin"],
+    ["//evil.example", "/admin"],
+    ["/admin/../evil", "/admin"],
+  ])("after sign-in, returnTo %s lands on %s", async (returnTo, expected) => {
+    const { state, nonce, pending } = await startSignIn(returnTo);
+    tokenEndpoint(await idToken({ nonce }));
+
+    const res = await returnFromMicrosoft({ code: "auth-code", state }, pending);
+
+    expect(res.headers.get("location")).toBe(expected);
+  });
+
+  it("me returns the signed-in admin, or 401", async () => {
+    const { state, nonce, pending } = await startSignIn();
+    tokenEndpoint(await idToken({ nonce }));
+    const session = cookieValue(await returnFromMicrosoft({ code: "c", state }, pending), "mc_admin");
+
+    const signedIn = await me(request("/api/admin/auth/me", { headers: { cookie: `mc_admin=${session}` } }));
+    expect(await signedIn.json()).toEqual({
+      user: { name: "Larry Murillo", email: "larry@murilloconsulting.co" },
+    });
+    expect((await me(request("/api/admin/auth/me"))).status).toBe(401);
   });
 
   it("logout clears the session cookie", async () => {

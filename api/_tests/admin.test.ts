@@ -75,7 +75,6 @@ describe("GET /api/admin/inquiries", () => {
       lastName: "Lopez",
       fileCount: 2,
     });
-    expect(body.user).toEqual({ name: "Larry Murillo", email: "larry@murilloconsulting.co" });
     expect(sent(ddb, "QueryCommand")[0]).toMatchObject({
       IndexName: "status-createdAt-index",
       ScanIndexForward: false,
