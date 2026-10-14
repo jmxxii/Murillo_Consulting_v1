@@ -21,11 +21,13 @@ Several services need the exact site addresses, so write them down now:
 ## 1. AWS account
 
 1. Create an AWS account (or use the existing one) and sign in to the console.
-2. Every resource below goes in **US East (N. Virginia) `us-east-1`**.
-   **→ `APP_AWS_REGION` = `us-east-1`**. Console Home has no region picker;
+2. Every resource below goes in **US East (Ohio) `us-east-2`**.
+   **→ `APP_AWS_REGION` = `us-east-2`**. New accounts on the AWS free plan are
+   locked to this one region (other regions need the account owner to upgrade
+   first), and everything here works in it. Console Home has no region picker;
    it appears top right (next to the account name) once you open a regional
    service. The quickest way in is
-   <https://us-east-1.console.aws.amazon.com/dynamodbv2/home?region=us-east-1>.
+   <https://us-east-2.console.aws.amazon.com/dynamodbv2/home?region=us-east-2>.
    CloudShell then opens in that region too.
 3. **Account plan.** New accounts start on the AWS *free plan*: credits plus
    a free period (about 6 months). When it ends, AWS services stop working
@@ -47,7 +49,7 @@ submission (TTL).
 
 ```bash
 aws dynamodb create-table \
-  --region us-east-1 \
+  --region us-east-2 \
   --table-name inquiries \
   --attribute-definitions \
       AttributeName=id,AttributeType=S \
@@ -66,10 +68,10 @@ aws dynamodb create-table \
       "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
     }]'
 
-aws dynamodb wait table-exists --region us-east-1 --table-name inquiries
+aws dynamodb wait table-exists --region us-east-2 --table-name inquiries
 
 aws dynamodb update-time-to-live \
-  --region us-east-1 \
+  --region us-east-2 \
   --table-name inquiries \
   --time-to-live-specification Enabled=true,AttributeName=expiresAt
 ```
@@ -98,7 +100,8 @@ Bucket names are global, so add something unique:
 BUCKET=murillo-consulting-inquiries-$(openssl rand -hex 4)
 echo $BUCKET   # write this down
 
-aws s3api create-bucket --region us-east-1 --bucket $BUCKET
+aws s3api create-bucket --region us-east-2 --bucket $BUCKET \
+  --create-bucket-configuration LocationConstraint=us-east-2
 ```
 
 **→ `UPLOADS_BUCKET` = the name printed above**
@@ -193,8 +196,8 @@ bucket and sending email.
         "dynamodb:DeleteItem"
       ],
       "Resource": [
-        "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/inquiries",
-        "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/inquiries/index/*"
+        "arn:aws:dynamodb:us-east-2:ACCOUNT_ID:table/inquiries",
+        "arn:aws:dynamodb:us-east-2:ACCOUNT_ID:table/inquiries/index/*"
       ]
     },
     {
@@ -214,7 +217,7 @@ bucket and sending email.
       "Sid": "SendNotification",
       "Effect": "Allow",
       "Action": "ses:SendEmail",
-      "Resource": "arn:aws:ses:us-east-1:ACCOUNT_ID:identity/*"
+      "Resource": "arn:aws:ses:us-east-2:ACCOUNT_ID:identity/*"
     }
   ]
 }
@@ -235,7 +238,7 @@ Vercel reserves `AWS_*` variable names, which is why ours start with `APP_`.
 SES sends one short email per new inquiry: the business name and a link to
 `/admin`. No bill data and no contact details.
 
-1. SES (region `us-east-1`) → Identities → Create identity → **Domain** →
+1. SES (region `us-east-2`) → Identities → Create identity → **Domain** →
    `murilloconsulting.co`. Under "Verifying your domain", keep **Easy DKIM**,
    RSA 2048-bit. Leave "custom MAIL FROM" off. Create.
 2. SES shows **three CNAME records**. Add them at the DNS host for
@@ -318,7 +321,7 @@ Vercel → Project → Settings → Environment Variables. Add each variable for
 
 | Variable | Value | Notes |
 |---|---|---|
-| `APP_AWS_REGION` | `us-east-1` | |
+| `APP_AWS_REGION` | `us-east-2` | |
 | `APP_AWS_ACCESS_KEY_ID` | step 4 | Mark sensitive |
 | `APP_AWS_SECRET_ACCESS_KEY` | step 4 | Mark sensitive |
 | `INQUIRIES_TABLE` | `inquiries` | |

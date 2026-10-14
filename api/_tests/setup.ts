@@ -13,7 +13,7 @@ vi.mock("../_lib/aws.js", () => ({
 
 vi.mock("@aws-sdk/s3-presigned-post", () => ({
   createPresignedPost: vi.fn(async ({ Key }: { Key: string }) => ({
-    url: "https://test-bucket.s3.us-east-1.amazonaws.com/",
+    url: "https://test-bucket.s3.us-east-2.amazonaws.com/",
     fields: { key: Key },
   })),
 }));

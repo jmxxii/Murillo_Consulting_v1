@@ -10,7 +10,7 @@ import { SESv2Client } from "@aws-sdk/client-sesv2";
  * Tests replace this whole module (see api/_tests/setup.ts).
  */
 const config = {
-  region: process.env.APP_AWS_REGION ?? "us-east-1",
+  region: process.env.APP_AWS_REGION ?? "us-east-2",
   credentials: process.env.APP_AWS_ACCESS_KEY_ID
     ? {
         accessKeyId: process.env.APP_AWS_ACCESS_KEY_ID,

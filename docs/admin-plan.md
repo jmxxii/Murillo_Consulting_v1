@@ -21,7 +21,7 @@ This replaces the "simple setup" (Formspree + SharePoint) at the top of
 | Retention | **90 days** for files and inquiry records, deleted automatically |
 | Bot protection | **Cloudflare Turnstile** on the public form, verified server-side before any upload slot is issued |
 | Extras in v1 | **Email Larry on each new inquiry** (AWS SES), **status labels** (New / Contacted / Closed), **Delete button** |
-| AWS region | `us-east-1` unless the user says otherwise |
+| AWS region | `us-east-2` (Ohio). The AWS free-plan account is locked to it; nothing here needs another region |
 
 Note: this reverses the earlier "two-step" decision (contact form first, upload
 link later). Public anonymous upload is back on purpose, which is why
