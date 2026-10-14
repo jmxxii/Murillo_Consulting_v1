@@ -27,13 +27,15 @@ The dev server runs on <http://localhost:8080>.
 | `npm test` | Vitest, single run |
 | `npm run test:watch` | Vitest in watch mode |
 
-Type checking: `npx tsc -p tsconfig.app.json --noEmit`
+Type checking: `npm run typecheck` (site and `api/`)
 
 ## Environment
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `VITE_LEAD_ENDPOINT` | No | HTTPS endpoint that accepts the lead form as `multipart/form-data`. **Not yet implemented** — see [docs/backend-requirements.md](docs/backend-requirements.md). While unset, the form validates normally but shows an "online submission is not available yet" state pointing at the direct contact details. |
+| `VITE_TURNSTILE_SITE_KEY` | Yes, to accept submissions | Cloudflare Turnstile site key. While unset, the form validates normally but shows an "online submission is not available yet" state pointing at the direct contact details. |
+
+The API in `/api` needs about a dozen more server-side variables (AWS, Microsoft Entra, Turnstile secret). The full list and how to get each value is in [docs/aws-setup.md](docs/aws-setup.md). Run the API locally with `vercel dev`; `npm run dev` serves only the site.
 
 ## Routes
 

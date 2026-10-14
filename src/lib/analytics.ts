@@ -21,7 +21,7 @@ export type AnalyticsEvent =
   | { name: "bill_upload_start"; file_count: number }
   | { name: "bill_upload_complete"; file_count: number; total_size_kb: number }
   | { name: "lead_form_submit"; has_files: boolean; file_count: number }
-  | { name: "lead_form_error"; reason: "validation" | "network" | "server" | "unconfigured" }
+  | { name: "lead_form_error"; reason: "validation" | "network" | "server" | "verification" | "unconfigured" }
   | { name: "lead_form_success"; file_count: number }
   | { name: "phone_click"; placement: string }
   | { name: "email_click"; placement: string }

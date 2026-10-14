@@ -1,5 +1,9 @@
 # Backend requirements — lead intake and bill upload
 
+> **Superseded.** The business chose AWS (S3 + DynamoDB + `/admin`) instead.
+> See `docs/admin-plan.md` and `docs/aws-setup.md`. This file is kept for the
+> reasoning behind earlier options only.
+
 **Status: not implemented.** This repository is a static SPA with no server.
 
 ## Start here: the simple setup (no backend)

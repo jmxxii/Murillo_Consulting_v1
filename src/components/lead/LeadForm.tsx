@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, CheckCircle2, Info, Loader2, Lock, Send } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,15 +26,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import FileDropzone from "@/components/lead/FileDropzone";
+import Turnstile from "@/components/lead/Turnstile";
 import { siteConfig } from "@/content/site";
 import { dictionaries, LOCALES } from "@/i18n";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { track } from "@/lib/analytics";
 import { createLeadSchema, type LeadFormValues } from "@/lib/leadSchema";
-import { isSubmissionConfigured, submitLead } from "@/lib/leadSubmission";
+import { sanitizeFileName } from "@/lib/fileValidation";
+import {
+  getTurnstileSiteKey,
+  isSubmissionConfigured,
+  submitLead,
+} from "@/lib/leadSubmission";
 import { cn } from "@/lib/utils";
 
-type SubmitState = "idle" | "submitting" | "success" | "error" | "unconfigured";
+type SubmitState = "idle" | "submitting" | "success" | "error" | "verification" | "unconfigured";
 
 interface LeadFormProps {
   campaign?: string;
@@ -44,22 +51,13 @@ interface LeadFormProps {
 }
 
 /**
- * Public lead form — contact details only, NO file upload.
- *
- * Energy bills carry the utility account number, service address and usage
- * history. We deliberately do not collect them from an anonymous visitor:
- *   - there is no public upload endpoint to spam, fuzz or push malware at
- *   - bills are only ever stored for leads that are actually engaged
- *   - consent is given in response to a specific request, not a checkbox
- *
- * After first contact, Larry emails a single-use, expiring link that uploads
- * direct to private storage. That page reuses <FileDropzone>, which is why
- * the component and its `t.form.upload` copy still exist.
- * See docs/backend-requirements.md.
+ * Lead + bill submission form.
  *
  * Validation lives in `createLeadSchema`, built from the active dictionary,
  * so every message is translated and switching language re-derives the
- * resolver.
+ * resolver. Attachments are validated client-side for fast feedback only;
+ * the API repeats every check. Submission is create -> upload to S3 ->
+ * complete (see `src/lib/leadSubmission.ts`), behind a Turnstile check.
  */
 const LeadForm = ({
   campaign,
@@ -67,8 +65,16 @@ const LeadForm = ({
   submitLabel,
   className,
 }: LeadFormProps) => {
-  const { t, locale } = useLanguage();
+  const { t, locale, format } = useLanguage();
   const [state, setState] = useState<SubmitState>("idle");
+  const [files, setFiles] = useState<File[]>([]);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [rejectedNames, setRejectedNames] = useState<string[]>([]);
+  // Turnstile tokens are single use: bumping `attempt` remounts the widget.
+  const [token, setToken] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [verificationPending, setVerificationPending] = useState(false);
+  const turnstileSiteKey = getTurnstileSiteKey();
   const statusRef = useRef<HTMLDivElement>(null);
 
   const schema = useMemo(() => createLeadSchema(t), [t]);
@@ -94,9 +100,19 @@ const LeadForm = ({
   const submitting = state === "submitting";
 
   const onSubmit = async (values: LeadFormValues) => {
+    if (turnstileSiteKey && !token) {
+      setVerificationPending(true);
+      return;
+    }
+    setVerificationPending(false);
     setState("submitting");
+    setProgress(files.length > 0 ? 0 : null);
 
-    track({ name: "lead_form_submit", has_files: false, file_count: 0 });
+    track({
+      name: "lead_form_submit",
+      has_files: files.length > 0,
+      file_count: files.length,
+    });
 
     const result = await submitLead({
       payload: {
@@ -106,20 +122,38 @@ const LeadForm = ({
         submittedLocale: locale,
         campaign,
       },
-      files: [],
+      files,
+      turnstileToken: token ?? "",
+      onProgress: files.length > 0 ? setProgress : undefined,
     });
 
+    setProgress(null);
+    setToken(null);
+    setAttempt((n) => n + 1);
+
     if (result.status === "success") {
-      track({ name: "lead_form_success", file_count: 0 });
+      const delivered = files.filter((_, index) => !result.rejected.includes(index));
+      if (delivered.length > 0) {
+        track({
+          name: "bill_upload_complete",
+          file_count: delivered.length,
+          total_size_kb: Math.round(
+            delivered.reduce((sum, file) => sum + file.size, 0) / 1024,
+          ),
+        });
+      }
+      track({ name: "lead_form_success", file_count: delivered.length });
       if (campaign) track({ name: "campaign_conversion", campaign });
+      setRejectedNames(result.rejected.map((index) => sanitizeFileName(files[index].name)));
       setState("success");
       form.reset();
+      setFiles([]);
     } else if (result.status === "unconfigured") {
       track({ name: "lead_form_error", reason: "unconfigured" });
       setState("unconfigured");
     } else {
       track({ name: "lead_form_error", reason: result.reason });
-      setState("error");
+      setState(result.reason === "verification" ? "verification" : "error");
     }
 
     // Move focus to the outcome so it is announced and visible immediately.
@@ -151,6 +185,26 @@ const LeadForm = ({
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-secondary-subtle-foreground">
           {successMessage ?? t.form.status.successBody}
         </p>
+        {rejectedNames.length > 0 && (
+          <p className="mx-auto mt-4 flex max-w-md items-start gap-2 rounded-md bg-destructive-subtle px-3 py-2 text-left text-sm text-destructive">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>
+              {format(t.form.status.filesRejected, { names: rejectedNames.join(", ") })}
+              {siteConfig.email && (
+                <>
+                  {" "}
+                  <a
+                    href={`mailto:${siteConfig.email}`}
+                    onClick={() => track({ name: "email_click", placement: "form_rejected_files" })}
+                    className="font-semibold underline"
+                  >
+                    {siteConfig.email}
+                  </a>
+                </>
+              )}
+            </span>
+          </p>
+        )}
         <Button
           variant="outline"
           className="mt-6"
@@ -162,20 +216,24 @@ const LeadForm = ({
     );
   }
 
-  const blockingNotice =
-    state === "unconfigured"
-      ? {
-          title: t.form.status.unconfiguredTitle,
-          body: t.form.status.unconfiguredBody,
-          Icon: Info,
-        }
-      : state === "error"
-        ? {
-            title: t.form.status.errorTitle,
-            body: t.form.status.errorBody,
-            Icon: AlertTriangle,
-          }
-        : null;
+  const notices: Partial<Record<SubmitState, { title: string; body: string; Icon: typeof Info }>> = {
+    unconfigured: {
+      title: t.form.status.unconfiguredTitle,
+      body: t.form.status.unconfiguredBody,
+      Icon: Info,
+    },
+    verification: {
+      title: t.form.status.verificationTitle,
+      body: t.form.status.verificationBody,
+      Icon: AlertTriangle,
+    },
+    error: {
+      title: t.form.status.errorTitle,
+      body: t.form.status.errorBody,
+      Icon: AlertTriangle,
+    },
+  };
+  const blockingNotice = notices[state];
 
   return (
     <div
@@ -407,6 +465,18 @@ const LeadForm = ({
             />
           </fieldset>
 
+          <fieldset disabled={submitting}>
+            <legend className="mb-4 text-xs font-semibold uppercase tracking-widest text-secondary">
+              {t.form.sectionFiles}
+            </legend>
+            <FileDropzone
+              files={files}
+              onChange={setFiles}
+              uploadProgress={progress}
+              disabled={submitting}
+            />
+          </fieldset>
+
           <fieldset disabled={submitting} className="space-y-5">
             <legend className="mb-4 text-xs font-semibold uppercase tracking-widest text-secondary">
               {t.form.sectionNotes}
@@ -463,30 +533,24 @@ const LeadForm = ({
             />
           </fieldset>
 
-          {/* Sets expectations, and explains why we are NOT asking for bills
-              here — an unexplained missing upload reads as an oversight. */}
-          <div className="rounded-md border border-border bg-surface p-5">
-            <h4 className="flex items-center gap-2 font-display text-sm font-semibold text-primary">
-              <Lock className="h-4 w-4 text-secondary" aria-hidden="true" />
-              {t.form.nextSteps.heading}
-            </h4>
-            <ol className="mt-3 space-y-2">
-              {t.form.nextSteps.items.map((item, index) => (
-                <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary-subtle text-xs font-semibold text-secondary-subtle-foreground"
-                  >
-                    {index + 1}
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ol>
-            <p className="mt-4 border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
-              {t.form.nextSteps.whyNoUpload}
-            </p>
-          </div>
+          {turnstileSiteKey && (
+            <div>
+              <Turnstile
+                key={attempt}
+                siteKey={turnstileSiteKey}
+                language={locale}
+                onToken={(value) => {
+                  setToken(value);
+                  if (value) setVerificationPending(false);
+                }}
+              />
+              {verificationPending && (
+                <p role="alert" className="mt-2 text-sm font-medium text-destructive">
+                  {t.form.errors.verificationPending}
+                </p>
+              )}
+            </div>
+          )}
 
           <div>
             <Button

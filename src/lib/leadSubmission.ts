@@ -1,21 +1,20 @@
-import { sanitizeFileName } from "./fileValidation";
+import { fileExtension, sanitizeFileName } from "./fileValidation";
 
 /**
- * Lead + bill submission transport.
+ * Lead + bill submission transport. Three steps against our own API (`/api`):
  *
- * This repository has no backend. The form posts `multipart/form-data` to the
- * endpoint named by `VITE_LEAD_ENDPOINT`; when that variable is not set the
- * UI shows an explicit "not available yet" state and points the visitor at
- * the direct contact details, rather than pretending a submission succeeded.
+ *   1. POST /api/inquiries            form fields, file metadata, Turnstile token
+ *                                     -> { id, uploads: one presigned S3 POST per file }
+ *   2. POST each file straight to S3  (Vercel functions reject bodies over 4.5 MB)
+ *   3. POST /api/inquiries/:id/complete
+ *                                     -> { rejected: indexes of files that did not arrive }
  *
- * Security responsibilities that live on the SERVER, not here:
- *   - re-validate type/size/count and sniff magic bytes
- *   - malware scan before the file is durably stored
- *   - store outside the web root, private ACL, server-generated object key
- *   - never echo the storage path or an internal error back to the client
- *   - enforce rate limiting and spam protection
- *   - apply the documented retention/deletion schedule
- * See docs/backend-requirements.md for the full contract.
+ * The server repeats every check (type, size, count, magic bytes) and makes
+ * its own storage keys. See docs/admin-plan.md.
+ *
+ * A failed file upload does not fail the submission: the contact details are
+ * already saved, so /complete reports the file as rejected and the form tells
+ * the visitor which files to email instead.
  */
 
 export interface LeadPayload {
@@ -30,104 +29,141 @@ export interface LeadPayload {
   locationCount: number;
   notes?: string;
   consent: true;
-  /** Locale the form was completed in — helps route the follow-up call. */
+  /** Locale the form was completed in, helps route the follow-up call. */
   submittedLocale: string;
   /** Campaign slug when submitted from a campaign page. */
   campaign?: string;
 }
 
 export type SubmitResult =
-  | { status: "success" }
+  | { status: "success"; rejected: number[] }
   | { status: "unconfigured" }
-  | { status: "error"; reason: "network" | "server" };
+  | { status: "error"; reason: "network" | "server" | "verification" };
 
 export interface SubmitOptions {
   payload: LeadPayload;
   files: File[];
-  /** 0–100. Reported from real XHR upload progress. */
+  turnstileToken: string;
+  /** 0–100. Reported from real XHR upload progress across all files. */
   onProgress?: (percent: number) => void;
-  signal?: AbortSignal;
 }
 
-export function getLeadEndpoint(): string | undefined {
-  const endpoint = import.meta.env.VITE_LEAD_ENDPOINT;
-  return typeof endpoint === "string" && endpoint.length > 0 ? endpoint : undefined;
+interface UploadSlot {
+  url: string;
+  fields: Record<string, string>;
 }
 
+export function getTurnstileSiteKey(): string | undefined {
+  const key = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+  return typeof key === "string" && key.length > 0 ? key : undefined;
+}
+
+/** Without a Turnstile site key the API would refuse every submission. */
 export function isSubmissionConfigured(): boolean {
-  return getLeadEndpoint() !== undefined;
+  return getTurnstileSiteKey() !== undefined;
 }
 
-function buildFormData(payload: LeadPayload, files: File[]): FormData {
-  const data = new FormData();
-  for (const [key, value] of Object.entries(payload)) {
-    if (value === undefined || value === null) continue;
-    data.append(key, String(value));
-  }
-  for (const file of files) {
-    // Pass a sanitized name as a display hint. The server must still generate
-    // its own storage key and must not trust this value as a path.
-    data.append("bills", file, sanitizeFileName(file.name));
-  }
-  return data;
+const TYPE_FOR_EXTENSION: Record<string, string> = {
+  pdf: "application/pdf",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+};
+
+/**
+ * Some browsers report an empty type for files picked from certain apps;
+ * validateFiles already confirmed the magic bytes, so the extension decides.
+ */
+function mimeTypeOf(file: File): string {
+  return file.type || TYPE_FOR_EXTENSION[fileExtension(file.name)] || "";
+}
+
+async function postJson(url: string, body?: unknown): Promise<Response> {
+  return fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
 }
 
 /**
- * Posts the lead. Uses XHR rather than fetch because `fetch` still has no
- * upload-progress event, and a progress bar matters when someone is sending
- * several photographed bills over a phone connection.
+ * Uploads one file to its presigned S3 POST. XHR rather than fetch because
+ * fetch still has no upload-progress event. Resolves false on any failure.
  */
-export function submitLead({
+function uploadFile(
+  slot: UploadSlot,
+  file: File,
+  onLoaded: (bytes: number) => void,
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    const data = new FormData();
+    for (const [key, value] of Object.entries(slot.fields)) data.append(key, value);
+    data.append("file", file); // S3 requires the file to be the last field
+
+    const request = new XMLHttpRequest();
+    request.open("POST", slot.url, true);
+    request.timeout = 120_000;
+    request.upload.addEventListener("progress", (event) => onLoaded(event.loaded));
+    request.addEventListener("load", () => {
+      onLoaded(file.size);
+      resolve(request.status >= 200 && request.status < 300);
+    });
+    for (const failure of ["error", "timeout", "abort"]) {
+      request.addEventListener(failure, () => resolve(false));
+    }
+    request.send(data);
+  });
+}
+
+export async function submitLead({
   payload,
   files,
+  turnstileToken,
   onProgress,
-  signal,
 }: SubmitOptions): Promise<SubmitResult> {
-  const endpoint = getLeadEndpoint();
-
-  if (!endpoint) {
+  if (!isSubmissionConfigured()) {
     if (import.meta.env.DEV) {
       console.warn(
-        "[leadSubmission] VITE_LEAD_ENDPOINT is not set — the lead form will render its " +
-          "'submission unavailable' state. See docs/backend-requirements.md.",
+        "[leadSubmission] VITE_TURNSTILE_SITE_KEY is not set, so the lead form renders its " +
+          "'submission unavailable' state. See docs/aws-setup.md.",
       );
     }
-    return Promise.resolve({ status: "unconfigured" });
+    return { status: "unconfigured" };
   }
 
-  return new Promise((resolve) => {
-    const request = new XMLHttpRequest();
-    request.open("POST", endpoint, true);
-    // Form services (Formspree etc.) answer a non-JSON request with a
-    // redirect to a captcha/thank-you page. XHR follows it, sees 200, and we
-    // would report success for a submission that was never recorded.
-    request.setRequestHeader("Accept", "application/json");
-    request.responseType = "json";
-    request.timeout = 120_000;
-
-    request.upload.addEventListener("progress", (event) => {
-      if (event.lengthComputable && onProgress) {
-        onProgress(Math.round((event.loaded / event.total) * 100));
-      }
+  try {
+    const created = await postJson("/api/inquiries", {
+      ...payload,
+      turnstileToken,
+      files: files.map((file) => ({
+        name: sanitizeFileName(file.name),
+        type: mimeTypeOf(file),
+        size: file.size,
+      })),
     });
+    // Deliberately not surfacing the response body: server errors can carry
+    // internal detail we should not show a visitor.
+    if (created.status === 403) return { status: "error", reason: "verification" };
+    if (!created.ok) return { status: "error", reason: "server" };
+    const { id, uploads } = (await created.json()) as { id: string; uploads: UploadSlot[] };
 
-    request.addEventListener("load", () => {
-      onProgress?.(100);
-      if (request.status >= 200 && request.status < 300) {
-        resolve({ status: "success" });
-      } else {
-        // Deliberately not surfacing the response body — server errors can
-        // carry internal detail we should not show a visitor.
-        resolve({ status: "error", reason: "server" });
-      }
-    });
+    const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+    const loaded = files.map(() => 0);
+    await Promise.all(
+      files.map((file, index) =>
+        uploadFile(uploads[index], file, (bytes) => {
+          loaded[index] = bytes;
+          const sum = loaded.reduce((a, b) => a + b, 0);
+          onProgress?.(Math.round((sum / totalBytes) * 100));
+        }),
+      ),
+    );
 
-    request.addEventListener("error", () => resolve({ status: "error", reason: "network" }));
-    request.addEventListener("timeout", () => resolve({ status: "error", reason: "network" }));
-    request.addEventListener("abort", () => resolve({ status: "error", reason: "network" }));
-
-    signal?.addEventListener("abort", () => request.abort(), { once: true });
-
-    request.send(buildFormData(payload, files));
-  });
+    const completed = await postJson(`/api/inquiries/${encodeURIComponent(id)}/complete`);
+    if (!completed.ok) return { status: "error", reason: "server" };
+    const { rejected } = (await completed.json()) as { rejected: number[] };
+    return { status: "success", rejected };
+  } catch {
+    return { status: "error", reason: "network" };
+  }
 }

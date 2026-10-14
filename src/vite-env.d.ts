@@ -2,11 +2,10 @@
 
 interface ImportMetaEnv {
   /**
-   * HTTPS endpoint that accepts the lead form as `multipart/form-data`.
-   * Unset in this repository — the form renders its "not available yet"
-   * state until a backend exists. See docs/backend-requirements.md.
+   * Cloudflare Turnstile site key (public). Unset, the lead form renders its
+   * "not available yet" state. See docs/aws-setup.md.
    */
-  readonly VITE_LEAD_ENDPOINT?: string;
+  readonly VITE_TURNSTILE_SITE_KEY?: string;
 }
 
 interface ImportMeta {

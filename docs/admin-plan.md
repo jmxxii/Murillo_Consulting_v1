@@ -1,6 +1,6 @@
 # Plan: AWS inquiry storage + admin page
 
-**Status:** steps 1 (`docs/aws-setup.md`) and 2 (API in `/api`) done; step 3 next.
+**Status:** steps 1 (`docs/aws-setup.md`), 2 (API in `/api`) and 3 (public form) done; step 4 (admin page) next.
 This replaces the "simple setup" (Formspree + SharePoint) at the top of
 `docs/backend-requirements.md`. Where the two disagree, this file wins.
 
