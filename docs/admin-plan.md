@@ -1,6 +1,6 @@
 # Plan: AWS inquiry storage + admin page
 
-**Status:** planned and agreed with the business, not started.
+**Status:** steps 1 (`docs/aws-setup.md`) and 2 (API in `/api`) done; step 3 next.
 This replaces the "simple setup" (Formspree + SharePoint) at the top of
 `docs/backend-requirements.md`. Where the two disagree, this file wins.
 
@@ -154,5 +154,6 @@ synchronized, so the admin UI must handle "file expired" gracefully.
 - Reusable pieces already built: `src/components/lead/FileDropzone.tsx`,
   `src/lib/fileValidation.ts` (magic bytes, filename sanitizing),
   `src/lib/leadSubmission.ts` (XHR with upload progress), `src/lib/leadSchema.ts`.
-- Current checks: typecheck clean, 89 tests passing, lint 0 errors, build OK.
+- Current checks: `npm run typecheck` clean (site + `api/`), 129 tests passing, lint 0 errors, build OK.
+- API tests live in `api/_tests/` (underscore folders are not deployed as functions) and mock AWS in `api/_tests/setup.ts`. API imports use `.js` extensions because Vercel runs them as ESM.
 - The user prefers replies without em dashes.

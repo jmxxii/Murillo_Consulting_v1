@@ -106,12 +106,19 @@ function readHeaderBytes(blob: Blob): Promise<Uint8Array> {
   });
 }
 
+/**
+ * Returns the accepted MIME type the leading bytes belong to, or undefined.
+ * Shared with the server (`api/`), which runs the same check on the stored object.
+ */
+export function detectMimeType(header: Uint8Array): string | undefined {
+  return MAGIC_NUMBERS.find(({ bytes }) =>
+    bytes.every((byte, index) => header[index] === byte),
+  )?.mime;
+}
+
 /** Reads the first bytes and checks them against the known signatures. */
 export async function hasValidSignature(file: File): Promise<boolean> {
-  const header = await readHeaderBytes(file.slice(0, 8));
-  return MAGIC_NUMBERS.some(({ bytes }) =>
-    bytes.every((byte, index) => header[index] === byte),
-  );
+  return detectMimeType(await readHeaderBytes(file.slice(0, 8))) !== undefined;
 }
 
 export function formatBytes(bytes: number): string {
