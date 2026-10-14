@@ -256,10 +256,10 @@ describe("page metadata", () => {
     await waitFor(() => expect(document.title).toBe(en.seo.homeTitle));
     expect(
       document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
-    ).toBe("https://murilloconsulting.com/");
+    ).toBe("https://murilloconsulting.co/");
     expect(
       document.querySelector('link[rel="alternate"][hreflang="es"]')?.getAttribute("href"),
-    ).toBe("https://murilloconsulting.com/es");
+    ).toBe("https://murilloconsulting.co/es");
     expect(
       document.querySelector('meta[property="og:locale"]')?.getAttribute("content"),
     ).toBe("en_US");
@@ -269,7 +269,7 @@ describe("page metadata", () => {
     await waitFor(() => expect(document.title).toBe(es.seo.homeTitle));
     expect(
       document.querySelector('link[rel="canonical"]')?.getAttribute("href"),
-    ).toBe("https://murilloconsulting.com/es");
+    ).toBe("https://murilloconsulting.co/es");
     expect(
       document.querySelector('meta[property="og:locale"]')?.getAttribute("content"),
     ).toBe("es_US");

@@ -68,8 +68,8 @@ export interface SiteConfig {
 export const siteConfig: SiteConfig = {
   legalName: "Murillo Consulting, LLC",
   shortName: "Murillo Consulting",
-  siteUrl: "https://murilloconsulting.com",
-  email: "contact@murilloconsulting.com",
+  siteUrl: "https://murilloconsulting.co",
+  email: "contact@murilloconsulting.co",
   phone: null,
   schedulingUrl:
     "https://outlook.office.com/book/EnergyStrategy@murilloconsulting.co/?ismsaljsauthenabled=true",

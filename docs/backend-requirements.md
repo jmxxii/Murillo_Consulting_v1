@@ -100,7 +100,7 @@ Start here. Move to B only if the SharePoint-hosted upload page is a problem.
 
 ### Option B — in-site upload page via Microsoft Graph
 
-Keeps the client on murilloconsulting.com.
+Keeps the client on murilloconsulting.co.
 
 - Entra ID app registration, `Sites.ReadWrite.All` (application permission),
   client credentials in Vercel env vars

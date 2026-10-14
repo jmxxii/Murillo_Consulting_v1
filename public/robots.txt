@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://murilloconsulting.com/sitemap.xml
+Sitemap: https://murilloconsulting.co/sitemap.xml

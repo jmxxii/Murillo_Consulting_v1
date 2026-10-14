@@ -64,7 +64,7 @@ describe("POST /api/inquiries/:id/complete", () => {
     expect(email.Destination.ToAddresses).toEqual(["larry@murilloconsulting.co"]);
     const { Subject, Body } = email.Content.Simple;
     expect(Subject.Data).toBe("New inquiry: Lopez Bakery");
-    expect(Body.Text.Data).toContain(`https://murilloconsulting.com/admin/inquiries/${ID}`);
+    expect(Body.Text.Data).toContain(`https://murilloconsulting.co/admin/inquiries/${ID}`);
     const text = JSON.stringify(email);
     for (const secret of ["ana@example.com", "555-0123", "bill.pdf", inquiry.files[0].key]) {
       expect(text).not.toContain(secret);

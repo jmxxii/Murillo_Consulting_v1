@@ -28,7 +28,7 @@ vi.mock("@aws-sdk/s3-request-presigner", () => ({
 }));
 
 Object.assign(process.env, {
-  SITE_URL: "https://murilloconsulting.com",
+  SITE_URL: "https://murilloconsulting.co",
   INQUIRIES_TABLE: "inquiries",
   UPLOADS_BUCKET: "test-bucket",
   SES_FROM_EMAIL: "inquiries@murilloconsulting.co",

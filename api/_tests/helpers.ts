@@ -27,7 +27,7 @@ export function awsError(name: string) {
   return Object.assign(new Error(name), { name });
 }
 
-export const SITE = "https://murilloconsulting.com";
+export const SITE = "https://murilloconsulting.co";
 export const ID = "0b9c6a44-3a2f-4e8e-9d6b-2f1f6a7c8d90";
 
 export async function adminCookie() {

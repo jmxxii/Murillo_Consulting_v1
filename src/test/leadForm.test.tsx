@@ -371,7 +371,7 @@ describe("LeadForm submission", () => {
 
     expect(await screen.findByText(en.form.status.errorTitle)).toBeInTheDocument();
     // Falls back to the direct contact route rather than a dead end.
-    expect(screen.getAllByText("contact@murilloconsulting.com").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("contact@murilloconsulting.co").length).toBeGreaterThan(0);
     // No internal detail is surfaced.
     expect(document.body.textContent).not.toMatch(/500|leads\.example\.com/);
   });

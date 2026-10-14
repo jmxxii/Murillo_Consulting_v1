@@ -73,7 +73,7 @@ describe("admin sign-in", () => {
     expect(Object.fromEntries(location.searchParams)).toMatchObject({
       client_id: "client-id",
       response_type: "code",
-      redirect_uri: "https://murilloconsulting.com/api/admin/auth/callback",
+      redirect_uri: "https://murilloconsulting.co/api/admin/auth/callback",
       code_challenge_method: "S256",
     });
     expect(location.searchParams.get("code_challenge")).toMatch(/^[\w-]{43}$/);

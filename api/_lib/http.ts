@@ -6,7 +6,7 @@ export function env(name: string): string {
   return value;
 }
 
-/** SITE_URL without a trailing slash, e.g. https://murilloconsulting.com */
+/** SITE_URL without a trailing slash, e.g. https://murilloconsulting.co */
 export function siteUrl(): string {
   return env("SITE_URL").replace(/\/+$/, "");
 }

@@ -14,13 +14,9 @@ Several services need the exact site addresses, so write them down now:
 
 | Name | Value |
 |---|---|
-| Production | `https://murilloconsulting.com` (the canonical URL in `index.html`). Add `https://www.murilloconsulting.com` too if that also serves the site. |
+| Production | `https://murilloconsulting.co` (the canonical URL in `index.html`). Add `https://www.murilloconsulting.co` too if that also serves the site. |
 | Development preview | The **branch URL** Vercel gives the `development` branch, e.g. `https://murillo-consulting-v1-git-development-<team>.vercel.app`. Find it in Vercel → Project → Deployments → a `development` deployment → "Domains". It stays the same across deploys, unlike the per-deploy URLs. |
 | Local | `http://localhost:3000` (what `vercel dev` uses) |
-
-Note: the website is on `murilloconsulting.com` but email (Microsoft 365) is on
-`murilloconsulting.co`. That is fine. Email is sent from the `.co` domain
-because that is where the mail DNS lives.
 
 ## 1. AWS account
 
@@ -128,8 +124,8 @@ cat > cors.json <<'EOF'
 {
   "CORSRules": [{
     "AllowedOrigins": [
-      "https://murilloconsulting.com",
-      "https://www.murilloconsulting.com",
+      "https://murilloconsulting.co",
+      "https://www.murilloconsulting.co",
       "https://murillo-consulting-v1-git-development-TEAM.vercel.app",
       "http://localhost:3000"
     ],
@@ -261,14 +257,14 @@ own tenant can sign in, and only people explicitly assigned to the app.
    - Supported account types: **Accounts in this organizational directory only
      (single tenant)**
    - Redirect URI: platform **Web**,
-     `https://murilloconsulting.com/api/admin/auth/callback`
+     `https://murilloconsulting.co/api/admin/auth/callback`
    - Register.
 3. On the app's Overview page copy:
    - **Application (client) ID** **→ `ENTRA_CLIENT_ID`**
    - **Directory (tenant) ID** (a GUID, not the domain name) **→ `ENTRA_TENANT_ID`**
 4. Authentication → Web → Redirect URIs → add the others, one per site from
    step 0:
-   - `https://www.murilloconsulting.com/api/admin/auth/callback` (if used)
+   - `https://www.murilloconsulting.co/api/admin/auth/callback` (if used)
    - `https://<development branch URL>/api/admin/auth/callback`
    - `http://localhost:3000/api/admin/auth/callback`
 
@@ -293,8 +289,8 @@ Anyone not assigned gets a Microsoft error page and never reaches our site.
 ## 7. Cloudflare Turnstile (bot check on the public form)
 
 1. Cloudflare dashboard → **Turnstile** → Add widget.
-2. Name `Murillo Consulting form`. Hostnames: `murilloconsulting.com`,
-   `www.murilloconsulting.com`, the development branch host (no `https://`),
+2. Name `Murillo Consulting form`. Hostnames: `murilloconsulting.co`,
+   `www.murilloconsulting.co`, the development branch host (no `https://`),
    and `localhost`.
 3. Widget mode: **Managed**. Pre-clearance: No. Create.
 4. Copy **Site key** **→ `VITE_TURNSTILE_SITE_KEY`** and **Secret key**
@@ -327,7 +323,7 @@ Vercel → Project → Settings → Environment Variables. Add each variable for
 | `ENTRA_CLIENT_ID` | step 6 | |
 | `ENTRA_CLIENT_SECRET` | step 6 | Mark sensitive |
 | `SESSION_SECRET` | `openssl rand -base64 48` | Mark sensitive. Use a **different** value for Production and Preview |
-| `SITE_URL` | Production: `https://murilloconsulting.com`. Preview: the development branch URL | No trailing slash. Used for the sign-in redirect and the link in Larry's email |
+| `SITE_URL` | Production: `https://murilloconsulting.co`. Preview: the development branch URL | No trailing slash. Used for the sign-in redirect and the link in Larry's email |
 
 Redeploy after adding variables; existing deployments do not pick them up.
 
