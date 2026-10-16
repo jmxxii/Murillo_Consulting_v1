@@ -1,5 +1,6 @@
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { ddb } from "../_lib/aws.js";
+import { GET } from "../config.js";
 import { POST } from "../inquiries/index.js";
 import { mockSend, request, sent } from "./helpers.js";
 
@@ -113,5 +114,14 @@ describe("POST /api/inquiries", () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network")));
 
     expect((await post(validBody)).status).toBe(403);
+  });
+});
+
+describe("GET /api/config", () => {
+  it("serves the public Turnstile site key from the server environment", async () => {
+    process.env.TURNSTILE_SITE_KEY = "site-key";
+    expect(await GET().json()).toEqual({ turnstileSiteKey: "site-key" });
+    delete process.env.TURNSTILE_SITE_KEY;
+    expect(await GET().json()).toEqual({ turnstileSiteKey: null });
   });
 });

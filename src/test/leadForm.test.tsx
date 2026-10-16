@@ -288,6 +288,7 @@ describe("LeadForm submission", () => {
   const INQUIRY_ID = "0b9c6a44-3a2f-4e8e-9d6b-2f1f6a7c8d90";
   let createResponse: () => Response;
   let completeResponse: () => Response;
+  let configResponse: () => Response;
   let fetchMock: ReturnType<typeof vi.fn>;
   let turnstileRender: ReturnType<typeof vi.fn>;
 
@@ -315,7 +316,6 @@ describe("LeadForm submission", () => {
     FakeXhr.instances = [];
     FakeXhr.status = 204;
     globalThis.XMLHttpRequest = FakeXhr as unknown as typeof XMLHttpRequest;
-    vi.stubEnv("VITE_TURNSTILE_SITE_KEY", "test-site-key");
 
     createResponse = () =>
       Response.json(
@@ -329,8 +329,13 @@ describe("LeadForm submission", () => {
         { status: 201 },
       );
     completeResponse = () => Response.json({ rejected: [] });
+    configResponse = () => Response.json({ turnstileSiteKey: "test-site-key" });
     fetchMock = vi.fn(async (url: string) =>
-      url.endsWith("/complete") ? completeResponse() : createResponse(),
+      url === "/api/config"
+        ? configResponse()
+        : url.endsWith("/complete")
+          ? completeResponse()
+          : createResponse(),
     );
     vi.stubGlobal("fetch", fetchMock);
 
@@ -344,8 +349,10 @@ describe("LeadForm submission", () => {
 
   afterEach(() => {
     globalThis.XMLHttpRequest = originalXhr;
-    vi.unstubAllEnvs();
   });
+
+  /** True once the form has posted to the inquiry API (the config fetch does not count). */
+  const submitted = () => fetchMock.mock.calls.some(([url]) => String(url).startsWith("/api/inquiries"));
 
   it("creates the inquiry, completes it and shows the translated confirmation", async () => {
     renderWithLocale(<LeadForm />, "es");
@@ -426,7 +433,9 @@ describe("LeadForm submission", () => {
   });
 
   it("shows an error state when the network fails", async () => {
-    fetchMock.mockRejectedValue(new TypeError("Failed to fetch"));
+    createResponse = () => {
+      throw new TypeError("Failed to fetch");
+    };
     renderWithLocale(<LeadForm />, "en");
     fillValidForm(en);
     await submit();
@@ -451,17 +460,23 @@ describe("LeadForm submission", () => {
     await submit();
 
     expect(await screen.findByText(en.form.errors.verificationPending)).toBeInTheDocument();
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(submitted()).toBe(false);
+  });
+
+  it("reads the Turnstile site key from the API at runtime, not from the build", async () => {
+    renderWithLocale(<LeadForm />, "en");
+    await waitFor(() => expect(turnstileRender).toHaveBeenCalled());
+    expect(turnstileRender.mock.calls[0][1]).toMatchObject({ sitekey: "test-site-key" });
   });
 
   it("explains that submission is unavailable when Turnstile is not configured", async () => {
-    vi.stubEnv("VITE_TURNSTILE_SITE_KEY", "");
+    configResponse = () => Response.json({ turnstileSiteKey: null });
     renderWithLocale(<LeadForm />, "en");
     fillValidForm(en);
     await submit();
 
     expect(await screen.findByText(en.form.status.unconfiguredTitle)).toBeInTheDocument();
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(submitted()).toBe(false);
   });
 
   it("lets the visitor submit another business after success", async () => {

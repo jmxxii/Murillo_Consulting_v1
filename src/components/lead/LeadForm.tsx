@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,8 +36,7 @@ import { track } from "@/lib/analytics";
 import { createLeadSchema, type LeadFormValues } from "@/lib/leadSchema";
 import { sanitizeFileName } from "@/lib/fileValidation";
 import {
-  getTurnstileSiteKey,
-  isSubmissionConfigured,
+  fetchTurnstileSiteKey,
   submitLead,
 } from "@/lib/leadSubmission";
 import { cn } from "@/lib/utils";
@@ -75,7 +74,15 @@ const LeadForm = ({
   const [token, setToken] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [verificationPending, setVerificationPending] = useState(false);
-  const turnstileSiteKey = getTurnstileSiteKey();
+  // undefined while loading, null when the server has no key configured.
+  const [turnstileSiteKey, setTurnstileSiteKey] = useState<string | null | undefined>(undefined);
+  useEffect(() => {
+    let active = true;
+    void fetchTurnstileSiteKey().then((key) => active && setTurnstileSiteKey(key));
+    return () => {
+      active = false;
+    };
+  }, []);
   const statusRef = useRef<HTMLDivElement>(null);
 
   const schema = useMemo(() => createLeadSchema(t), [t]);
@@ -101,7 +108,13 @@ const LeadForm = ({
   const submitting = state === "submitting";
 
   const onSubmit = async (values: LeadFormValues) => {
-    if (turnstileSiteKey && !token) {
+    if (turnstileSiteKey === null) {
+      track({ name: "lead_form_error", reason: "unconfigured" });
+      setState("unconfigured");
+      requestAnimationFrame(() => statusRef.current?.focus());
+      return;
+    }
+    if (!token) {
       setVerificationPending(true);
       return;
     }
@@ -124,7 +137,7 @@ const LeadForm = ({
         campaign,
       },
       files,
-      turnstileToken: token ?? "",
+      turnstileToken: token,
       onProgress: files.length > 0 ? setProgress : undefined,
     });
 
@@ -149,9 +162,6 @@ const LeadForm = ({
       setState("success");
       form.reset();
       setFiles([]);
-    } else if (result.status === "unconfigured") {
-      track({ name: "lead_form_error", reason: "unconfigured" });
-      setState("unconfigured");
     } else {
       track({ name: "lead_form_error", reason: result.reason });
       setState(result.reason === "verification" ? "verification" : "error");
@@ -585,7 +595,7 @@ const LeadForm = ({
               .
             </p>
 
-            {!isSubmissionConfigured() && (
+            {turnstileSiteKey === null && (
               <p className="mt-3 text-xs text-muted-foreground">
                 {t.form.status.unconfiguredBody}
               </p>

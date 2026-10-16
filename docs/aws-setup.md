@@ -306,7 +306,7 @@ Anyone not assigned gets a Microsoft error page and never reaches our site.
    `www.murilloconsulting.co`, the development branch host (no `https://`),
    and `localhost`.
 3. Widget mode: **Managed**. Pre-clearance: No. Create.
-4. Copy **Site key** **→ `VITE_TURNSTILE_SITE_KEY`** and **Secret key**
+4. Copy **Site key** **→ `TURNSTILE_SITE_KEY`** and **Secret key**
    **→ `TURNSTILE_SECRET_KEY`**.
 
 The site does not need to be on Cloudflare DNS for Turnstile to work.
@@ -331,7 +331,7 @@ Vercel → Project → Settings → Environment Variables. Add each variable for
 | `SES_FROM_EMAIL` | `inquiries@murilloconsulting.co` | |
 | `NOTIFY_EMAIL` | Larry's verified address | |
 | `TURNSTILE_SECRET_KEY` | step 7 | Mark sensitive |
-| `VITE_TURNSTILE_SITE_KEY` | step 7 | Public by design, built into the page |
+| `TURNSTILE_SITE_KEY` | step 7 | Public by design (the widget needs it in the browser), but served by `/api/config` at runtime, not built into the bundle |
 | `ENTRA_TENANT_ID` | step 6 (GUID) | |
 | `ENTRA_CLIENT_ID` | step 6 | |
 | `ENTRA_CLIENT_SECRET` | step 6 | Mark sensitive |

@@ -65,6 +65,7 @@ origin, not ours, and cannot reach the admin session cookie.
 
 | Endpoint | Access | Purpose |
 |---|---|---|
+| `GET /api/config` | Public | Turnstile site key, read from `TURNSTILE_SITE_KEY` at runtime (no `VITE_*` build variables) |
 | `POST /api/inquiries` | Public + Turnstile | Validate, save, return upload slots |
 | `POST /api/inquiries/:id/complete` | Public | Verify files, mark New, email Larry |
 | `GET /api/admin/auth/login` | Anyone | Redirect to Microsoft (OIDC code flow, state + PKCE in a short-lived cookie). `?returnTo=/admin/...` is honored only for paths inside `/admin` |

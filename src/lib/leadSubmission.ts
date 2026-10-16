@@ -37,7 +37,6 @@ export interface LeadPayload {
 
 export type SubmitResult =
   | { status: "success"; rejected: number[] }
-  | { status: "unconfigured" }
   | { status: "error"; reason: "network" | "server" | "verification" };
 
 export interface SubmitOptions {
@@ -53,14 +52,20 @@ interface UploadSlot {
   fields: Record<string, string>;
 }
 
-export function getTurnstileSiteKey(): string | undefined {
-  const key = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-  return typeof key === "string" && key.length > 0 ? key : undefined;
-}
-
-/** Without a Turnstile site key the API would refuse every submission. */
-export function isSubmissionConfigured(): boolean {
-  return getTurnstileSiteKey() !== undefined;
+/**
+ * The Turnstile site key, served by /api/config at runtime rather than built
+ * into the bundle. Null when the server has none configured, or when there is
+ * no API at all (`npm run dev`), so the form shows its "not available" state.
+ */
+export async function fetchTurnstileSiteKey(): Promise<string | null> {
+  try {
+    const response = await fetch("/api/config", { headers: { Accept: "application/json" } });
+    if (!response.ok) return null;
+    const { turnstileSiteKey } = (await response.json()) as { turnstileSiteKey?: unknown };
+    return typeof turnstileSiteKey === "string" && turnstileSiteKey ? turnstileSiteKey : null;
+  } catch {
+    return null;
+  }
 }
 
 const TYPE_FOR_EXTENSION: Record<string, string> = {
@@ -121,16 +126,6 @@ export async function submitLead({
   turnstileToken,
   onProgress,
 }: SubmitOptions): Promise<SubmitResult> {
-  if (!isSubmissionConfigured()) {
-    if (import.meta.env.DEV) {
-      console.warn(
-        "[leadSubmission] VITE_TURNSTILE_SITE_KEY is not set, so the lead form renders its " +
-          "'submission unavailable' state. See docs/aws-setup.md.",
-      );
-    }
-    return { status: "unconfigured" };
-  }
-
   try {
     const created = await postJson("/api/inquiries", {
       ...payload,
