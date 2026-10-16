@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Public URLs. Campaign pages are added here only once their status is
+  "active" and they are inside their date window — draft campaigns are
+  noindex and must stay out of the sitemap.
+-->
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+>
+  <url>
+    <loc>https://murilloconsulting.co/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://murilloconsulting.co/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://murilloconsulting.co/es" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://murilloconsulting.co/" />
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://murilloconsulting.co/es</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://murilloconsulting.co/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://murilloconsulting.co/es" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://murilloconsulting.co/" />
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://murilloconsulting.co/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://murilloconsulting.co/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://murilloconsulting.co/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://murilloconsulting.co/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://murilloconsulting.co/es/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://murilloconsulting.co/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://murilloconsulting.co/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://murilloconsulting.co/privacy" />
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

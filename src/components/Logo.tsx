@@ -1,46 +1,110 @@
+import { Link } from "react-router-dom";
+import { siteConfig } from "@/content/site";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { cn } from "@/lib/utils";
+
 /**
- * Murillo Consulting — Logo
+ * Murillo Consulting logo lockup.
  *
- * Renders the official brand lockup from a pre-colored SVG asset — the correct
- * variant is chosen per background, so the artwork is never recolored, stretched,
- * or distorted (only scaled by height, width auto).
+ * Renders a pre-colored PNG so the artwork is never recolored or distorted —
+ * only scaled by height. Pick the variant that matches the background:
+ *   "reversed" (white wordmark) for navy surfaces
+ *   "color"    for light surfaces
  *
- * Drop the official transparent PNGs at these paths (see public/assets/logo/).
- * Export at ~3x display size for retina crispness (horizontal ≈ 720×160+):
- *   mc-logo-horizontal.png           — color wordmark, for light backgrounds
- *   mc-logo-horizontal-reversed.png  — white wordmark, for navy backgrounds (nav/footer)
- *   mc-symbol.png / mc-symbol-reversed.png — icon-only marks (compact use)
+ * Lockups:
+ *   "horizontal" — emblem beside the wordmark (header, footer)
+ *   "stacked"    — emblem above the wordmark; falls back to horizontal until
+ *                  the asset is supplied (siteConfig.logo.stacked)
+ *   "symbol"     — emblem only
  *
- * variant="nav"     — reversed (white) lockup for dark/navy surfaces
- * variant="default" — color lockup for light surfaces
+ * Intrinsic width/height come from the real asset dimensions so the browser
+ * reserves the right box and the header does not shift while loading.
  */
 
+type Lockup = "horizontal" | "stacked" | "symbol";
+
 interface LogoProps {
-  /** "nav" = reversed lockup for navy backgrounds; "default" = color lockup for light backgrounds */
-  variant?: "nav" | "default";
-  /** render the icon-only symbol instead of the full horizontal lockup */
-  symbol?: boolean;
+  variant?: "color" | "reversed";
+  lockup?: Lockup;
+  /** Wrap in a link to the localized homepage. Off for footer/static use. */
+  asLink?: boolean;
   className?: string;
+  /** `eager` for the header logo (it is above the fold), `lazy` elsewhere. */
+  loading?: "eager" | "lazy";
 }
 
-const Logo = ({ variant = "nav", symbol = false, className = "" }: LogoProps) => {
-  const reversed = variant === "nav";
-  const base = symbol ? "mc-symbol" : "mc-logo-horizontal";
-  const src = `/assets/logo/${base}${reversed ? "-reversed" : ""}.png`;
+/** Intrinsic pixel dimensions of each asset, for aspect-ratio reservation. */
+const DIMENSIONS: Record<Lockup, { width: number; height: number }> = {
+  horizontal: { width: 1327, height: 470 },
+  stacked: { width: 1024, height: 1024 },
+  symbol: { width: 512, height: 512 },
+};
+
+const SIZE_CLASSES: Record<Lockup, string> = {
+  horizontal: "h-8 sm:h-9 md:h-10",
+  stacked: "h-16 sm:h-20",
+  symbol: "h-9",
+};
+
+function resolveSource(lockup: Lockup, reversed: boolean): {
+  src: string;
+  lockup: Lockup;
+} {
+  const { logo } = siteConfig;
+
+  if (lockup === "symbol") {
+    return { src: reversed ? logo.symbolReversed : logo.symbol, lockup };
+  }
+
+  if (lockup === "stacked") {
+    const stacked = reversed ? logo.stackedReversed : logo.stacked;
+    // Fall back to the horizontal lockup rather than rendering a broken image.
+    if (stacked) return { src: stacked, lockup };
+    return {
+      src: reversed ? logo.reversed : logo.color,
+      lockup: "horizontal",
+    };
+  }
+
+  return { src: reversed ? logo.reversed : logo.color, lockup: "horizontal" };
+}
+
+const Logo = ({
+  variant = "reversed",
+  lockup = "horizontal",
+  asLink = true,
+  className,
+  loading = "lazy",
+}: LogoProps) => {
+  const { t, path } = useLanguage();
+  const reversed = variant === "reversed";
+  const { src, lockup: resolved } = resolveSource(lockup, reversed);
+  const { width, height } = DIMENSIONS[resolved];
+
+  const image = (
+    <img
+      src={src}
+      alt={asLink ? t.common.companyShortName : ""}
+      aria-hidden={asLink ? undefined : true}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding="async"
+      draggable={false}
+      className={cn("w-auto select-none", SIZE_CLASSES[resolved], className)}
+    />
+  );
+
+  if (!asLink) return image;
 
   return (
-    <a
-      href="#"
-      className={`inline-flex items-center shrink-0 ${className}`}
-      aria-label="Murillo Consulting — Home"
+    <Link
+      to={path("/")}
+      className="inline-flex shrink-0 items-center rounded-sm"
+      aria-label={`${t.common.companyShortName} — ${t.nav.home}`}
     >
-      <img
-        src={src}
-        alt="Murillo Consulting"
-        className={`w-auto select-none ${symbol ? "h-9" : "h-8 sm:h-9 md:h-10"}`}
-        draggable={false}
-      />
-    </a>
+      {image}
+    </Link>
   );
 };
 

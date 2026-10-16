@@ -5,10 +5,28 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "jsdom",
     globals: true,
-    setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    unstubGlobals: true,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "web",
+          environment: "jsdom",
+          setupFiles: ["./src/test/setup.ts"],
+          include: ["src/**/*.{test,spec}.{ts,tsx}"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "api",
+          environment: "node",
+          setupFiles: ["./api/_tests/setup.ts"],
+          include: ["api/**/*.test.ts"],
+        },
+      },
+    ],
   },
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
